@@ -1,0 +1,7 @@
+SEMICOLON (';')
+WHITE_SPACE (' ')
+COMMA (',')
+WHITE_SPACE (' ')
+DOT ('.')
+WHITE_SPACE (' ')
+COLON (':')

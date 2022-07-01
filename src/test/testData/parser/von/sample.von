@@ -1,0 +1,28 @@
+# VON 格式示例文件
+
+Player {
+    name: "Alice",
+    level: 10,
+    health: 100,
+    position: [0, 0, 0],
+    inventory: [
+        "Sword",
+        "Shield",
+        "Potion"
+    ],
+    stats: {
+        strength: 15,
+        agility: 10,
+        intelligence: 8
+    },
+    is_alive: true,
+    last_updated: null
+}
+
+Enemy {
+    name: "Goblin",
+    level: 5,
+    health: 50,
+    position: [10, 0, 0],
+    is_alive: true
+}

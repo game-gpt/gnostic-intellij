@@ -1,0 +1,8 @@
+IDENTIFIER ('inventory')
+COLON (':')
+WHITE_SPACE (' ')
+LBRACK ('[')
+IDENTIFIER ('&')
+IDENTIFIER ('PlayerInventory')
+RBRACK (']')
+SEMICOLON (';')

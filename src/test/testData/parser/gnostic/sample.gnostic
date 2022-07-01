@@ -1,0 +1,29 @@
+# Gnostic 主文件示例
+GnosticFile {
+    version: "1.0",
+    module: Module {
+        name: "GameCore",
+        description: "Core game module",
+        author: "GameGPT",
+    },
+    dependencies: [
+        Dependency {
+            name: "Math",
+            version: "1.0.0",
+        },
+        Dependency {
+            name: "Physics",
+            version: "2.0.0",
+        },
+    ],
+    exports: [
+        Export {
+            symbol: "Player",
+            visibility: "public",
+        },
+        Export {
+            symbol: "Enemy",
+            visibility: "public",
+        },
+    ],
+}

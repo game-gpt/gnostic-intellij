@@ -1,0 +1,65 @@
+# Valkyrie 脚本示例文件
+
+using gg::engine;
+using gg::input;
+using gg::graphics;
+
+class Player {
+    let name: String;
+    let health = signal(100);
+    let level: i32;
+    
+    constructor(name: String, level: i32) {
+        this.name = name;
+        this.level = level;
+        
+        # 监听生命值变化
+        this.health.subscribe((value) => {
+            if (value <= 0) {
+                this.on_death();
+            }
+        });
+    }
+    
+    micro take_damage(amount: i32) {
+        this.health(this.health() - amount);
+    }
+    
+    micro heal(amount: i32) {
+        this.health(min(this.health() + amount, 100));
+    }
+    
+    micro on_death() {
+        console.log(this.name + " has died!");
+    }
+    
+    micro level_up() {
+        this.level += 1;
+        this.health(100); # 升级时回满生命值
+        console.log(this.name + " leveled up to " + this.level + "!");
+    }
+}
+
+# 创建角色
+let hero = Player("Hero", 1);
+let enemy = Player("Enemy", 1);
+
+# 战斗模拟
+hero.take_damage(30);
+enemy.take_damage(70);
+hero.level_up();
+
+# 系统定义
+system MovementSystem {
+    micro execute(world: World): Result<()> {
+        # 查询拥有 Position 和 Velocity 组件的实体
+        let query: Query<(Position, Velocity)> = world.query("Position", "Velocity");
+        loop entity, (pos, vel) in query.iter() {
+            # 更新位置
+            pos.x += vel.dx * delta_time;
+            pos.y += vel.dy * delta_time;
+        }
+        
+        return Fine()
+    }
+}

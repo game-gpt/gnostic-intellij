@@ -1,0 +1,19 @@
+fn testExpressions() {
+    // Arithmetic expressions
+    let sum: Int = 1 + 2 * 3;
+    let difference: Int = 10 - 5;
+    let product: Int = 4 * 5;
+    let quotient: Int = 20 / 4;
+    let remainder: Int = 10 % 3;
+    
+    // Comparison expressions
+    let isGreater: Bool = 5 > 3;
+    let isLess: Bool = 2 < 4;
+    let isEqual: Bool = 5 == 5;
+    let isNotEqual: Bool = 5 != 3;
+    
+    // Logical expressions
+    let andResult: Bool = true && false;
+    let orResult: Bool = true || false;
+    let notResult: Bool = !true;
+}

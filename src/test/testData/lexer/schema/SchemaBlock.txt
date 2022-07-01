@@ -1,0 +1,7 @@
+schema ('schema')
+WHITE_SPACE (' ')
+IDENTIFIER ('game_db')
+WHITE_SPACE (' ')
+LBRACE ('{')
+WHITE_SPACE (' ')
+RBRACE ('}')

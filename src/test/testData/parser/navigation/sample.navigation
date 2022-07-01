@@ -1,0 +1,34 @@
+# Navigation 文件示例
+NavigationFile {
+    version: "1.0",
+    navigation: NavigationMesh {
+        name: "MainNavMesh",
+        agent_radius: 0.5,
+        agent_height: 2.0,
+        max_slope: 45,
+        step_height: 0.4,
+    },
+    settings: {
+        area_cost: [
+            AreaCost { area: "Walkable", cost: 1.0 },
+            AreaCost { area: "Jump", cost: 2.0 },
+            AreaCost { area: "Climb", cost: 3.0 },
+        ],
+        off_mesh_links: [
+            OffMeshLink {
+                start: [0, 0, 0],
+                end: [10, 0, 0],
+                radius: 0.5,
+                bidirectional: true,
+            },
+        ],
+    },
+    tiles: [
+        Tile {
+            x: 0,
+            y: 0,
+            vertices: 1024,
+            triangles: 512,
+        },
+    ],
+}

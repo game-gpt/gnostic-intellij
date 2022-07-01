@@ -1,0 +1,7 @@
+KEYWORD_SHADER ('shader')
+WHITE_SPACE (' ')
+IDENTIFIER ('MyShader')
+WHITE_SPACE (' ')
+LBRACE ('{')
+WHITE_SPACE (' ')
+RBRACE ('}')

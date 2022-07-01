@@ -1,0 +1,16 @@
+# Bundle 文件示例
+BundleFile {
+    version: "1.0",
+    bundle: AssetBundle {
+        name: "main_assets",
+        variant: "",
+        compression: "LZ4",
+    },
+    assets: [
+        Asset {
+            path: "assets/prefabs/player.prefab",
+            guid: "018dc3f0-82c9-7d1a-8c3a-9d8b7e6f0001",
+            type: "Prefab",
+        },
+    ],
+}

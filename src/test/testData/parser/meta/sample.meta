@@ -1,0 +1,25 @@
+# 元数据文件示例
+TextureMetaFile {
+    version: "1.0",
+    guid: "018dc3f0-82c9-7d1a-8c3a-9d8b7e6f0000",
+    type: "Texture",
+    timestamp: "2026-04-10T12:00:00Z",
+    hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    dependencies: [],
+    references: [
+        Reference {
+            path: "scenes/main.scene",
+            entity_id: 123,
+            component: "SpriteRenderer",
+            field: "texture",
+        },
+    ],
+    extra: TextureMeta {
+        compression: "high",
+        max_size: 2048,
+        format: "RGBA32",
+        generate_mipmaps: true,
+        wrap_mode: "clamp",
+        filter_mode: "bilinear",
+    },
+}

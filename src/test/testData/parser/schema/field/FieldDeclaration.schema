@@ -1,0 +1,11 @@
+schema "com.example.game" {
+    model Player {
+        id: Int
+        name: String
+        health: Float = 100.0
+        isAlive: Bool = true
+        position: Vec3
+        inventory: [Item]
+        metadata: Map<String, String>
+    }
+}

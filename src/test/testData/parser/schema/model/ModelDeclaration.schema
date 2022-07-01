@@ -1,0 +1,8 @@
+schema "com.example.game" {
+    model Player {
+        id: Int
+        name: String
+        health: Float
+        isAlive: Bool
+    }
+}

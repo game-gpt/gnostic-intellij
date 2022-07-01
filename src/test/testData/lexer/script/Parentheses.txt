@@ -1,0 +1,8 @@
+LPAREN ('(')
+RPAREN (')')
+WHITE_SPACE (' ')
+LBRACE ('{')
+RBRACE ('}')
+WHITE_SPACE (' ')
+LBRACK ('[')
+RBRACK (']')

@@ -1,0 +1,75 @@
+# Mixer 文件示例
+MixerFile {
+    version: "1.0",
+    mixer: Mixer {
+        name: "MasterMixer",
+        output_type: "Stereo",
+        sample_rate: 48000,
+    },
+    groups: [
+        Group {
+            name: "Master",
+            volume: 1.0,
+            mute: false,
+            solo: false,
+            bypass_effects: false,
+        },
+        Group {
+            name: "Music",
+            parent: "Master",
+            volume: 0.8,
+            mute: false,
+            solo: false,
+        },
+        Group {
+            name: "SFX",
+            parent: "Master",
+            volume: 0.9,
+            mute: false,
+            solo: false,
+        },
+        Group {
+            name: "Ambient",
+            parent: "Master",
+            volume: 0.7,
+            mute: false,
+            solo: false,
+        },
+    ],
+    effects: [
+        Effect {
+            type: "Compressor",
+            threshold: -20,
+            ratio: 4,
+            attack: 10,
+            release: 100,
+        },
+        Effect {
+            type: "Reverb",
+            room_size: 0.5,
+            damping: 0.5,
+            wet_level: 0.3,
+            dry_level: 0.7,
+        },
+    ],
+    snapshots: [
+        Snapshot {
+            name: "Default",
+            transitions: [
+                Transition {
+                    target: "Master",
+                    volume: 1.0,
+                },
+            ],
+        },
+        Snapshot {
+            name: "Paused",
+            transitions: [
+                Transition {
+                    target: "Master",
+                    volume: 0.5,
+                },
+            ],
+        },
+    ],
+}

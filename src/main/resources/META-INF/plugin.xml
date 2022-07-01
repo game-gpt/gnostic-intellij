@@ -1,0 +1,211 @@
+<idea-plugin>
+	<id>gnostic-code</id>
+	<name>Gnostic Code</name>
+	<vendor>oovm</vendor>
+	<!-- Product and plugin compatibility requirements -->
+	<!-- https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html -->
+	<depends>com.intellij.modules.platform</depends>
+	<!--    <depends optional="true" config-file="plugin-with-rust.xml">org.rust.lang</depends>-->
+	<resource-bundle>messages.GnosticBundle</resource-bundle>
+	<extensions defaultExtensionNs="com.intellij">
+		<fileTypeFactory implementationClass="com.github.game_gpt.ide.file_type.GnosticFileTypeFactory"/>
+		<lang.parserDefinition
+			language="GnosticScript"
+			implementationClass="com.github.game_gpt.ide.definitions.ScriptParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticShader"
+			implementationClass="com.github.game_gpt.ide.definitions.ShaderParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticSchema"
+			implementationClass="com.github.game_gpt.ide.definitions.SchemaParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticObject"
+			implementationClass="com.github.game_gpt.ide.definitions.ObjectParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticMeta"
+			implementationClass="com.github.game_gpt.ide.definitions.MetaParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticConfig"
+			implementationClass="com.github.game_gpt.ide.definitions.ConfigParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="Gnostic"
+			implementationClass="com.github.game_gpt.ide.definitions.GnosticParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticWidget"
+			implementationClass="com.github.game_gpt.ide.definitions.WidgetParserDefinition"
+		/>
+		<!-- von extensions -->
+		<lang.parserDefinition
+			language="GnosticMesh"
+			implementationClass="com.github.game_gpt.ide.definitions.MeshParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticSkeleton"
+			implementationClass="com.github.game_gpt.ide.definitions.SkeletonParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticAnimation"
+			implementationClass="com.github.game_gpt.ide.definitions.AnimationParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticAnimator"
+			implementationClass="com.github.game_gpt.ide.definitions.AnimatorParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticLocale"
+			implementationClass="com.github.game_gpt.ide.definitions.LocaleParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticMaterial"
+			implementationClass="com.github.game_gpt.ide.definitions.MaterialParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticPrefab"
+			implementationClass="com.github.game_gpt.ide.definitions.PrefabParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticScene"
+			implementationClass="com.github.game_gpt.ide.definitions.SceneParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticStory"
+			implementationClass="com.github.game_gpt.ide.definitions.NotedownParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticAsset"
+			implementationClass="com.github.game_gpt.ide.definitions.AssetParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticMixer"
+			implementationClass="com.github.game_gpt.ide.definitions.MixerParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticBrush"
+			implementationClass="com.github.game_gpt.ide.definitions.BrushParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticBundle"
+			implementationClass="com.github.game_gpt.ide.definitions.BundleParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticTerrain"
+			implementationClass="com.github.game_gpt.ide.definitions.TerrainParserDefinition"
+		/>
+		<lang.parserDefinition
+			language="GnosticNavigation"
+			implementationClass="com.github.game_gpt.ide.definitions.NavigationParserDefinition"
+		/>
+		<!-- Valkyrie Syntax Highlighters -->
+		<lang.syntaxHighlighter
+			language="GnosticScript"
+			implementationClass="com.github.game_gpt.ide.highlighting.ValkyrieSyntaxHighlighter"
+		/>
+		<lang.syntaxHighlighter
+			language="GnosticShader"
+			implementationClass="com.github.game_gpt.ide.highlighting.ValkyrieSyntaxHighlighter"
+		/>
+		<lang.syntaxHighlighter
+			language="GnosticSchema"
+			implementationClass="com.github.game_gpt.ide.highlighting.ValkyrieSyntaxHighlighter"
+		/>
+
+		<!-- Von Syntax Highlighters -->
+		<lang.syntaxHighlighter
+			language="GnosticObject"
+			implementationClass="com.github.game_gpt.ide.highlighting.VonSyntaxHighlighter"
+		/>
+		<lang.syntaxHighlighter
+			language="GnosticMeta"
+			implementationClass="com.github.game_gpt.ide.highlighting.VonSyntaxHighlighter"
+		/>
+		<lang.syntaxHighlighter
+			language="GnosticConfig"
+			implementationClass="com.github.game_gpt.ide.highlighting.VonSyntaxHighlighter"
+		/>
+		<lang.syntaxHighlighter
+			language="GnosticScene"
+			implementationClass="com.github.game_gpt.ide.highlighting.VonSyntaxHighlighter"
+		/>
+		<lang.syntaxHighlighter
+			language="GnosticPrefab"
+			implementationClass="com.github.game_gpt.ide.highlighting.VonSyntaxHighlighter"
+		/>
+		<lang.syntaxHighlighter
+			language="GnosticMaterial"
+			implementationClass="com.github.game_gpt.ide.highlighting.VonSyntaxHighlighter"
+		/>
+		<lang.syntaxHighlighter
+			language="GnosticMesh"
+			implementationClass="com.github.game_gpt.ide.highlighting.VonSyntaxHighlighter"
+		/>
+		<lang.syntaxHighlighter
+			language="GnosticSkeleton"
+			implementationClass="com.github.game_gpt.ide.highlighting.VonSyntaxHighlighter"
+		/>
+		<lang.syntaxHighlighter
+			language="GnosticAnimation"
+			implementationClass="com.github.game_gpt.ide.highlighting.VonSyntaxHighlighter"
+		/>
+		<lang.syntaxHighlighter
+			language="GnosticAnimator"
+			implementationClass="com.github.game_gpt.ide.highlighting.VonSyntaxHighlighter"
+		/>
+		<lang.syntaxHighlighter
+			language="GnosticLocale"
+			implementationClass="com.github.game_gpt.ide.highlighting.VonSyntaxHighlighter"
+		/>
+		<lang.syntaxHighlighter
+			language="GnosticStory"
+			implementationClass="com.github.game_gpt.ide.highlighting.NoteSyntaxHighlighter"
+		/>
+		<lang.syntaxHighlighter
+			language="Gnostic"
+			implementationClass="com.github.game_gpt.ide.highlighting.VonSyntaxHighlighter"
+		/>
+
+		<!-- Voc Syntax Highlighters -->
+		<lang.syntaxHighlighter
+			language="GnosticWidget"
+			implementationClass="com.github.game_gpt.ide.highlighting.VocSyntaxHighlighter"
+		/>
+		<highlightVisitor implementationClass="com.github.game_gpt.ide.highlighting.GnosticSemanticHighlighter"/>
+		<lang.foldingBuilder
+			language="Gnostic"
+			implementationClass="com.github.game_gpt.ide.folding.GnosticFoldingBuilder"
+		/>
+		<lang.psiStructureViewFactory
+			language="Gnostic"
+			implementationClass="com.github.game_gpt.ide.structure.GnosticStructureViewFactory"
+		/>
+		<treeStructureProvider implementationClass="com.github.game_gpt.ide.structure.GnosticTreeStructureProvider"/>
+		<lang.findUsagesProvider
+			language="Gnostic"
+			implementationClass="com.github.game_gpt.ide.find_usages.GnosticFindUsagesProvider"
+		/>
+
+		<!-- Intention Actions -->
+		<intentionAction
+			implementationClass="com.github.game_gpt.ide.intentions.GnosticLifecycleFunctionsIntention"
+			category="GG Engine"
+		/>
+
+	</extensions>
+	<actions>
+		<action id="NewVonFile" class="com.github.game_gpt.ide.actions.VonCreateFile">
+			<add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewHtmlFile"/>
+		</action>
+		<action id="NewValkyrieFile" class="com.github.game_gpt.ide.actions.ValkyrieCreateFile">
+			<add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewHtmlFile"/>
+		</action>
+		<action id="NewWidgetFile" class="com.github.game_gpt.ide.actions.WidgetCreateFile">
+			<add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewHtmlFile"/>
+		</action>
+	</actions>
+</idea-plugin>

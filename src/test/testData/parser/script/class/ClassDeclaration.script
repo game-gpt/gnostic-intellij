@@ -1,0 +1,12 @@
+class Player {
+    let name: String = "Player";
+    let health: Float = 100.0;
+    
+    fn takeDamage(amount: Float) {
+        health -= amount;
+    }
+    
+    fn getHealth(): Float {
+        return health;
+    }
+}

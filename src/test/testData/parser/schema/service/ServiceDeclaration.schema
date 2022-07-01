@@ -1,0 +1,8 @@
+schema "com.example.game" {
+    service GameService {
+        GetPlayer(id: Int): Player
+        CreatePlayer(name: String): Player
+        UpdatePlayer(id: Int, name: String): Player
+        DeletePlayer(id: Int): Bool
+    }
+}

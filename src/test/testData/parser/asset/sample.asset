@@ -1,0 +1,23 @@
+# Asset 文件示例
+AssetFile {
+    version: "1.0",
+    asset: ScriptableObject {
+        name: "GameSettings",
+        type: "GameSettings",
+    },
+    properties: {
+        difficulty: "Normal",
+        volume_master: 1.0,
+        volume_music: 0.8,
+        volume_sfx: 0.9,
+        fullscreen: true,
+        resolution: [1920, 1080],
+        vsync: true,
+        language: "en",
+    },
+    metadata: {
+        created_at: "2026-04-15T00:00:00Z",
+        modified_at: "2026-04-15T00:00:00Z",
+        author: "GameGPT",
+    },
+}

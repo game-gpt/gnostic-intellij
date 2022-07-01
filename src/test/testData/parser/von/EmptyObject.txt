@@ -1,0 +1,4 @@
+FILE
+  GnosticElement(VON_DICT)
+    PsiElement({)('{')
+    PsiElement(})('}')

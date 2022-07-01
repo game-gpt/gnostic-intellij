@@ -1,0 +1,70 @@
+# 动画文件示例
+AnimationFile {
+    version: "1.0",
+    animation: Animation {
+        name: "IdleAnimation",
+        description: "Idle animation for character",
+        duration: 2.0,
+        loop: true,
+        speed: 1.0,
+        blend_time: 0.1,
+    },
+    tracks: [
+        Track {
+            name: "Transform",
+            target: "transform",
+            keyframes: [
+                Keyframe {
+                    time: 0.0,
+                    properties: Properties {
+                        position: [0, 0, 0],
+                        rotation: [0, 0, 0],
+                        scale: [1, 1, 1],
+                    },
+                    easing: "linear",
+                },
+                Keyframe {
+                    time: 1.0,
+                    properties: Properties {
+                        position: [0, 0.1, 0],
+                        rotation: [0, 0, 0],
+                        scale: [1, 1, 1],
+                    },
+                    easing: "ease_in_out",
+                },
+                Keyframe {
+                    time: 2.0,
+                    properties: Properties {
+                        position: [0, 0, 0],
+                        rotation: [0, 0, 0],
+                        scale: [1, 1, 1],
+                    },
+                    easing: "ease_in_out",
+                },
+            ],
+        },
+    ],
+    events: [
+        Event {
+            time: 0.5,
+            name: "footstep",
+            params: Params {
+                sound: "assets/audio/footstep.wav",
+            },
+        },
+    ],
+    dependencies: [
+        Dependency {
+            path: "assets/textures/idle_01.png",
+            guid: "018dc3f0-82c9-7d1a-8c3a-9d8b7e6f0001",
+        },
+    ],
+    references: [
+        Reference {
+            path: "assets/prefabs/character.prefab",
+            field: "animations",
+        },
+    ],
+    timestamp: "2026-04-10T12:00:00Z",
+    hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+}

@@ -1,0 +1,129 @@
+# 动画控制器文件示例
+AnimatorFile {
+    version: "1.0",
+    animator: Animator {
+        name: "CharacterAnimator",
+        description: "Main character animation controller",
+        initial_state: "Idle",
+    },
+    parameters: [
+        Parameter {
+            name: "Speed",
+            type: "float",
+            default_value: 0.0,
+            min_value: 0.0,
+            max_value: 10.0,
+        },
+        Parameter {
+            name: "IsGrounded",
+            type: "bool",
+            default_value: true,
+        },
+        Parameter {
+            name: "JumpTrigger",
+            type: "trigger",
+        },
+    ],
+    states: [
+        State {
+            name: "Idle",
+            animation: "assets/animations/idle.animation",
+            speed: 1.0,
+            loop: true,
+            blend_duration: 0.2,
+            motions: [
+                Motion {
+                    parameter: "Speed",
+                    threshold: 0.1,
+                    target_state: "Walk",
+                },
+            ],
+        },
+        State {
+            name: "Walk",
+            animation: "assets/animations/walk.animation",
+            speed: 1.0,
+            loop: true,
+            blend_duration: 0.2,
+            motions: [
+                Motion {
+                    parameter: "Speed",
+                    threshold: 0.0,
+                    target_state: "Idle",
+                },
+                Motion {
+                    parameter: "Speed",
+                    threshold: 5.0,
+                    target_state: "Run",
+                },
+            ],
+        },
+        State {
+            name: "Run",
+            animation: "assets/animations/run.animation",
+            speed: 1.2,
+            loop: true,
+            blend_duration: 0.15,
+            motions: [
+                Motion {
+                    parameter: "Speed",
+                    threshold: 3.0,
+                    target_state: "Walk",
+                },
+            ],
+        },
+        State {
+            name: "Jump",
+            animation: "assets/animations/jump.animation",
+            speed: 1.0,
+            loop: false,
+            blend_duration: 0.1,
+            transitions: [
+                Transition {
+                    condition: "IsGrounded == true",
+                    target_state: "Idle",
+                    duration: 0.2,
+                },
+            ],
+        },
+    ],
+    transitions: [
+        Transition {
+            from: "Idle",
+            to: "Jump",
+            condition: "JumpTrigger",
+            duration: 0.1,
+            has_exit_time: false,
+        },
+        Transition {
+            from: "Walk",
+            to: "Jump",
+            condition: "JumpTrigger",
+            duration: 0.1,
+            has_exit_time: false,
+        },
+        Transition {
+            from: "Run",
+            to: "Jump",
+            condition: "JumpTrigger",
+            duration: 0.1,
+            has_exit_time: false,
+        },
+    ],
+    layers: [
+        Layer {
+            name: "Base",
+            weight: 1.0,
+            blending_mode: "override",
+            avatar_mask: "assets/masks/body.mask",
+        },
+        Layer {
+            name: "UpperBody",
+            weight: 0.8,
+            blending_mode: "additive",
+            avatar_mask: "assets/masks/upper_body.mask",
+        },
+    ],
+    timestamp: "2026-04-10T12:00:00Z",
+    hash: "c3d4e5f678901234567890123456789012abcdef123456789012abcdef12345678",
+}

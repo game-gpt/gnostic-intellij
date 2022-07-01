@@ -1,0 +1,3 @@
+LBRACE ('{')
+IDENTIFIER ('children')
+RBRACE ('}')

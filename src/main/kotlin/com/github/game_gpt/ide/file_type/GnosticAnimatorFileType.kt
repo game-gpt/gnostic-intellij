@@ -1,0 +1,15 @@
+package com.github.game_gpt.ide.file_type
+
+import com.github.game_gpt.ide.icons.GnosticIcons
+import com.github.game_gpt.language.GnosticAnimatorLanguage
+import com.intellij.openapi.fileTypes.LanguageFileType
+import org.jetbrains.annotations.Nls
+import javax.swing.Icon
+
+object GnosticAnimatorFileType : LanguageFileType(GnosticAnimatorLanguage) {
+    override fun getName(): String = "Gnostic Animator"
+    override fun getDisplayName(): @Nls String = super.getDisplayName()
+    override fun getDescription(): String = "Gnostic Animator Files"
+    override fun getDefaultExtension(): String = "animator"
+    override fun getIcon(): Icon = GnosticIcons.ANIMATION
+}

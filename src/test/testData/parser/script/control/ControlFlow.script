@@ -1,0 +1,21 @@
+fn testControlFlow() {
+    let x: Int = 10;
+    
+    if (x > 5) {
+        // Do something
+    } else {
+        // Do something else
+    }
+    
+    loop {
+        x -= 1;
+        if (x <= 0) {
+            break;
+        }
+    }
+    
+    let y: Int = 0;
+    while (y < 5) {
+        y += 1;
+    }
+}

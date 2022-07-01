@@ -1,0 +1,4 @@
+namespace ('namespace')
+WHITE_SPACE (' ')
+IDENTIFIER ('game_backend')
+SEMICOLON (';')

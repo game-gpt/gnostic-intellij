@@ -38,15 +38,10 @@ dependencies {
 
     // IntelliJ Platform Gradle Plugin Dependencies Extension
     intellijPlatform {
-        create("IU", "2025.3")
+        create("IU", "2025.3.2")
 
         // Plugin Dependencies
         bundledPlugins(listOf("com.intellij.modules.xml"))
-
-        // Plugin Dependencies
-        plugins(
-            listOf("PsiViewer:253.7181")
-        )
 
         pluginVerifier()
         zipSigner()

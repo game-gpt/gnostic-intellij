@@ -1,0 +1,97 @@
+# 游戏后端数据模型定义
+namespace game_backend;
+
+# 枚举定义
+enums ItemRarity {
+    Common = 0;
+    Uncommon = 1;
+    Rare = 2;
+    Epic = 3;
+    Legendary = 4;
+}
+
+enums PlayerStatus {
+    Offline = 0;
+    Online = 1;
+    InGame = 2;
+    Away = 3;
+}
+
+# Schema 块：实体表定义
+schema game_db {
+    dialect: "postgresql";
+    connection: "postgresql://user:pass@localhost/game";
+    pool_size: 20;
+
+    model Player {
+        @primary_key
+        @auto_generate
+        id: uuid;
+
+        @unique
+        @max_length(50)
+        username: string;
+
+        @max_length(255)
+        email: string?;
+
+        level: i32 = 1;
+        experience: i64 = 0;
+        gold: i64 = 0;
+        gems: i64 = 0;
+
+        status: PlayerStatus = PlayerStatus::Offline;
+        last_login: datetime?;
+
+        created_at: datetime = now();
+        updated_at: datetime = now();
+
+        # 关系
+        inventory: [&PlayerInventory];
+        friends: [&Friendship];
+    }
+
+    model PlayerInventory {
+        @primary_key
+        @auto_generate
+        id: uuid;
+
+        @references(Player.id)
+        @on_delete(cascade)
+        player_id: uuid;
+
+        item_id: uuid;
+        quantity: i32 = 1;
+        slot: i32;
+
+        created_at: datetime = now();
+    }
+}
+
+# RPC 消息定义
+message GetPlayerRequest {
+    @required
+    id: uuid;
+}
+
+message CreatePlayerRequest {
+    @required
+    @max_length(50)
+    username: string;
+
+    @max_length(255)
+    email: string?;
+}
+
+message ListPlayersRequest {
+    page: i32 = 1;
+    page_size: i32 = 20;
+    status: PlayerStatus?;
+}
+
+# RPC 服务定义
+service PlayerService {
+    get_player(request: GetPlayerRequest) -> Player;
+    create_player(request: CreatePlayerRequest) -> Player;
+    list_players(request: ListPlayersRequest) -> Stream<Player>;
+}

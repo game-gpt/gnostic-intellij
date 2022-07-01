@@ -1,0 +1,14 @@
+# Terrain 文件示例
+TerrainFile {
+    version: "1.0",
+    terrain: Terrain {
+        name: "MainTerrain",
+        size: [512, 512],
+        heightmap_resolution: 513,
+    },
+    settings: {
+        heightmap_pixel_error: 5,
+        basemap_distance: 1000,
+        cast_shadows: true,
+    },
+}

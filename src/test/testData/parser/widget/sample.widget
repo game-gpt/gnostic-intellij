@@ -1,0 +1,68 @@
+<template>
+    <Layout style="flex-1 bg-[#1e1e1e]">
+        <Stack orientation="vertical" style="gap-8">
+            <MenuBar menus={editorMenus} />
+            <Toolbar items={toolItems} />
+            <SplitView orientation="horizontal" ratio="0.25" style="flex-1">
+                <HierarchyView root={sceneRoot} style="flex-1" />
+                <SplitView orientation="horizontal" ratio="0.6" style="flex-1">
+                    <SceneView scene={currentScene} style="flex-1" />
+                    <InspectorPanel target={selectedObject} style="flex-1" />
+                </SplitView>
+            </SplitView>
+            <AssetBrowser path="/assets" style="height-[200px]" />
+        </Stack>
+    </Layout>
+</template>
+
+<script>
+    using gg_editor::ui::widgets::{Layout, Stack, MenuBar, Toolbar, SplitView, HierarchyView, SceneView, InspectorPanel, AssetBrowser};
+    using gg_editor::ui::signal;
+    using gg_editor::ui::{on_mount, on_cleanup, on_update};
+
+    property {
+
+    }
+
+    let selectedObject = signal(null);
+    let currentScene = signal("Main");
+    let editorMenus = signal([]);
+    let toolItems = signal([]);
+    let sceneRoot = signal(null);
+
+    on_mount(micro() {
+        console::log("Editor UI mounted");
+    });
+
+    on_update(micro() {
+        console::log("Editor UI updated");
+    });
+
+    on_cleanup(micro() {
+        console::log("Editor UI unmounted");
+    });
+</script>
+
+<style>
+    .inspector-panel {
+        padding: $spacing-md;
+        background-color: $bg-secondary-color;
+    }
+
+    .hierarchy-item {
+        display: flex;
+        align-items: center;
+        padding: $spacing-xs $spacing-sm;
+        cursor: pointer;
+        border-radius: $radius-sm;
+
+        &:hover {
+            background-color: $secondary-color;
+        }
+
+        &.selected {
+            background-color: $primary-color;
+            color: white;
+        }
+    }
+</style>

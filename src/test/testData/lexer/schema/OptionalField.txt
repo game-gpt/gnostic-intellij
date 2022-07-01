@@ -1,0 +1,6 @@
+IDENTIFIER ('email')
+COLON (':')
+WHITE_SPACE (' ')
+IDENTIFIER ('string')
+IDENTIFIER ('?')
+SEMICOLON (';')

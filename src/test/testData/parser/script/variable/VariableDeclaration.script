@@ -1,0 +1,6 @@
+let playerName: String = "Alice";
+let playerLevel: Int = 5;
+let isPlayerAlive: Bool = true;
+
+const MAX_HEALTH: Float = 100.0;
+const PI: Float = 3.14159;

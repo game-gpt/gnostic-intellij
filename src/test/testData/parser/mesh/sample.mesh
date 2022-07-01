@@ -1,0 +1,69 @@
+# 网格文件示例
+MeshFile {
+    version: "1.0",
+    mesh: Mesh {
+        name: "CharacterMesh",
+        description: "Main character mesh",
+        vertex_count: 1024,
+        index_count: 2048,
+        bounds: Bounds {
+            min: [-1.0, -1.0, -1.0],
+            max: [1.0, 1.0, 1.0],
+        },
+    },
+    submeshes: [
+        SubMesh {
+            name: "Body",
+            material_index: 0,
+            vertex_start: 0,
+            vertex_count: 512,
+            index_start: 0,
+            index_count: 1024,
+        },
+        SubMesh {
+            name: "Head",
+            material_index: 1,
+            vertex_start: 512,
+            vertex_count: 512,
+            index_start: 1024,
+            index_count: 1024,
+        },
+    ],
+    materials: [
+        MaterialRef {
+            name: "BodyMaterial",
+            path: "assets/materials/body.material",
+        },
+        MaterialRef {
+            name: "HeadMaterial",
+            path: "assets/materials/head.material",
+        },
+    ],
+    bones: [
+        Bone {
+            name: "Root",
+            parent: -1,
+            bind_pose: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+        },
+        Bone {
+            name: "Spine",
+            parent: 0,
+            bind_pose: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+        },
+    ],
+    blend_shapes: [
+        BlendShape {
+            name: "Smile",
+            weight: 0.0,
+            deltas: [
+                Delta {
+                    vertex_index: 100,
+                    position: [0.01, 0.02, 0.0],
+                    normal: [0.0, 1.0, 0.0],
+                },
+            ],
+        },
+    ],
+    timestamp: "2026-04-10T12:00:00Z",
+    hash: "a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456",
+}

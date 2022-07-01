@@ -1,0 +1,57 @@
+# 骨骼文件示例
+SkeletonFile {
+    version: "1.0",
+    skeleton: Skeleton {
+        name: "CharacterSkeleton",
+        description: "Main character skeleton",
+        bone_count: 24,
+        root_bone: "Root",
+    },
+    bones: [
+        Bone {
+            name: "Root",
+            parent: -1,
+            local_transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+            world_transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+            bind_pose: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+            length: 0.0,
+        },
+        Bone {
+            name: "Spine",
+            parent: 0,
+            local_transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+            world_transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+            bind_pose: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+            length: 1.0,
+        },
+        Bone {
+            name: "Head",
+            parent: 1,
+            local_transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1.5, 0, 1],
+            world_transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 2.5, 0, 1],
+            bind_pose: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 2.5, 0, 1],
+            length: 0.5,
+        },
+    ],
+    ik_chains: [
+        IKChain {
+            name: "LeftLegIK",
+            start_bone: "LeftUpLeg",
+            end_bone: "LeftFoot",
+            target: "LeftFootIK",
+            pole: "LeftKneePole",
+            chain_length: 2,
+        },
+    ],
+    constraints: [
+        Constraint {
+            name: "SpineConstraint",
+            type: "look_at",
+            bone: "Spine",
+            target: "LookTarget",
+            weight: 0.5,
+        },
+    ],
+    timestamp: "2026-04-10T12:00:00Z",
+    hash: "b2c3d4e5f67890123456789012345678901abcdef12345678901abcdef1234567",
+}

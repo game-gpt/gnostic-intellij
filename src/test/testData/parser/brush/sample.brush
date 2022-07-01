@@ -1,0 +1,24 @@
+# Brush 文件示例
+BrushFile {
+    version: "1.0",
+    brush: Brush {
+        name: "StandardBrush",
+        type: "TerrainPaint",
+    },
+    settings: {
+        size: 50,
+        strength: 0.5,
+        falloff: 0.8,
+        spacing: 0.1,
+    },
+    falloff_curve: [
+        Point { x: 0, y: 1 },
+        Point { x: 0.5, y: 0.8 },
+        Point { x: 1, y: 0 },
+    ],
+    scatter: {
+        enabled: true,
+        amount: 0.2,
+        rotation: 360,
+    },
+}

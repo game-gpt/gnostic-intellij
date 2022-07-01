@@ -1,0 +1,11 @@
+schema "com.example.game" {
+    message CreatePlayerRequest {
+        name: String
+        level: Int
+    }
+    
+    message CreatePlayerResponse {
+        player: Player
+        success: Bool
+    }
+}

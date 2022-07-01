@@ -1,0 +1,79 @@
+# 材质文件示例
+MaterialFile {
+    version: "1.0",
+    material: Material {
+        name: "StandardMaterial",
+        description: "Standard PBR material",
+        shader: "assets/shaders/standard.shader",
+        type: "PBR",
+        is_variant: false,
+        material_base: null,
+    },
+    properties: Properties {
+        albedo: TextureProperty {
+            type: "texture",
+            value: "assets/textures/albedo.png",
+            tilling: [1, 1],
+            offset: [0, 0],
+        },
+        normal: TextureProperty {
+            type: "texture",
+            value: "assets/textures/normal.png",
+            tilling: [1, 1],
+            offset: [0, 0],
+        },
+        metallic: FloatProperty {
+            type: "float",
+            value: 0.5,
+        },
+        roughness: FloatProperty {
+            type: "float",
+            value: 0.5,
+        },
+        specular: FloatProperty {
+            type: "float",
+            value: 0.5,
+        },
+        emissive: ColorProperty {
+            type: "color",
+            value: [0, 0, 0, 1],
+        },
+        opacity: FloatProperty {
+            type: "float",
+            value: 1.0,
+        },
+    },
+    render_states: RenderStates {
+        cull_mode: "back",
+        blend_mode: "opaque",
+        depth_test: true,
+        depth_write: true,
+        wireframe: false,
+    },
+    tags: Tags {
+        render_queue: "opaque",
+        light_mode: "standard",
+    },
+    dependencies: [
+        Dependency {
+            path: "assets/shaders/standard.shader",
+            guid: "018dc3f0-82c9-7d1a-8c3a-9d8b7e6f0001",
+        },
+        Dependency {
+            path: "assets/textures/albedo.png",
+            guid: "018dc3f0-82c9-7d1a-8c3a-9d8b7e6f0002",
+        },
+        Dependency {
+            path: "assets/textures/normal.png",
+            guid: "018dc3f0-82c9-7d1a-8c3a-9d8b7e6f0003",
+        },
+    ],
+    references: [
+        Reference {
+            path: "assets/meshes/ground.obj",
+            field: "material",
+        },
+    ],
+    timestamp: "2026-04-10T12:00:00Z",
+    hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+}

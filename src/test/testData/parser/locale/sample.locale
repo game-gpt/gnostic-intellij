@@ -1,0 +1,42 @@
+[
+    LocaleEntry {
+        id: "main.story:scene[0].narration[0]#a3b2c1d0",
+        context: "",
+        translations: {
+            zh-CN: "星光学院，这所历史悠久的名校，隐藏着不为人知的秘密。",
+            en-US: "Star Academy, a historic school, hides secrets unknown to all.",
+            ja-JP: "星光学院、この歴史ある名校は、人知れぬ秘密を秘めている。",
+        },
+        status: {
+            en-US: "translated",
+            ja-JP: "translated",
+        },
+        comments: [
+            Comment {
+                author: "translator1",
+                content: "保持神秘感，开头要吸引人",
+                created_at: "2026-04-13T14:00:00Z",
+            },
+        ],
+    },
+    LocaleEntry {
+        id: "main.story:scene[0].dialogue[2]#e4f5g6h7",
+        context: "sakura",
+        translations: {
+            zh-CN: "新同学！你在看什么呢？",
+            en-US: "New student! What are you looking at?",
+            ja-JP: "新入生さん！何を見ているの？",
+        },
+        status: {
+            en-US: "translated",
+            ja-JP: "translated",
+        },
+        comments: [
+            Comment {
+                author: "translator1",
+                content: "樱井美咲的语气要友好活泼",
+                created_at: "2026-04-13T14:00:00Z",
+            },
+        ],
+    },
+]

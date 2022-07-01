@@ -1,0 +1,7 @@
+<template>
+    <div>
+        <button>Click Me</button>
+        <input type="text" placeholder="Enter text" />
+        <img src="image.png" alt="Test Image" />
+    </div>
+</template>

@@ -1,0 +1,13 @@
+<script>
+    using com.example.utils;
+    
+    let count: Int = 0;
+    
+    fn increment() {
+        count += 1;
+    }
+    
+    fn getCount(): Int {
+        return count;
+    }
+</script>

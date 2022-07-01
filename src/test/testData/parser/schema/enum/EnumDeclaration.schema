@@ -1,0 +1,9 @@
+schema "com.example.game" {
+    enum PlayerState {
+        IDLE
+        RUNNING
+        JUMPING
+        ATTACKING
+        DEFENDING
+    }
+}

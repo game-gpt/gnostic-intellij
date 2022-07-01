@@ -1,0 +1,3 @@
+schema "com.example.game" {
+    // Schema declaration test
+}
