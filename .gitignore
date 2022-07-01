@@ -1,0 +1,13 @@
+# IDE
+.intellijPlatform/
+.idea/
+.trae/
+
+# Kotlin
+.gradle/
+.qodana/
+.kotlin/
+build/
+*.hprof
+
+time-travel.*
