@@ -189,6 +189,10 @@
 			language="Gnostic"
 			implementationClass="com.github.game_gpt.ide.find_usages.GnosticFindUsagesProvider"
 		/>
+		<lang.formatter
+			language="Gnostic"
+			implementationClass="com.github.game_gpt.ide.formatting.GnosticFormattingModelBuilder"
+		/>
 
 		<!-- Intention Actions -->
 		<intentionAction

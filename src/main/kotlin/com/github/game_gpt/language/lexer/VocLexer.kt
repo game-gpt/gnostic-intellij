@@ -24,6 +24,7 @@ class VocLexer : Lexer() {
         private const val STATE_AFTER_SCRIPT_TAG = 4
         private const val STATE_AFTER_STYLE_TAG = 5
         private const val STATE_IN_CLOSING_TAG = 6
+        private const val STATE_IN_TAG_ATTRIBUTES = 7
     }
 
     override fun start(buffer: CharSequence, startOffset: Int, endOffset: Int, initialState: Int) {
@@ -126,6 +127,7 @@ class VocLexer : Lexer() {
                     currentTokenType = VocTypes.GT
                     when (state) {
                         STATE_IN_TAG -> state = STATE_INITIAL
+                        STATE_IN_TAG_ATTRIBUTES -> state = STATE_INITIAL
                         STATE_IN_CLOSING_TAG -> state = STATE_INITIAL
                         STATE_AFTER_SCRIPT_TAG -> state = STATE_IN_SCRIPT
                         STATE_AFTER_STYLE_TAG -> state = STATE_IN_STYLE
@@ -137,6 +139,10 @@ class VocLexer : Lexer() {
                 if (position + 1 < endOffset && buffer[position + 1] == '>') {
                     position += 2
                     currentTokenType = VocTypes.SELF_CLOSE
+                    when (state) {
+                        STATE_IN_TAG -> state = STATE_INITIAL
+                        STATE_IN_TAG_ATTRIBUTES -> state = STATE_INITIAL
+                    }
                 } else {
                     position++
                     currentTokenType = VocTypes.DIVIDE
@@ -182,16 +188,24 @@ class VocLexer : Lexer() {
                     }
                 }
                 val text = buffer.subSequence(start, position).toString()
-                if (state == STATE_IN_TAG) {
-                    when (text) {
-                        "script" -> state = STATE_AFTER_SCRIPT_TAG
-                        "style" -> state = STATE_AFTER_STYLE_TAG
+                when (state) {
+                    STATE_IN_TAG -> {
+                        currentTokenType = VocTypes.TAG_NAME
+                        when (text) {
+                            "script" -> state = STATE_AFTER_SCRIPT_TAG
+                            "style" -> state = STATE_AFTER_STYLE_TAG
+                            else -> state = STATE_IN_TAG_ATTRIBUTES
+                        }
                     }
-                    currentTokenType = VocTypes.TAG_NAME
-                } else if (state == STATE_IN_CLOSING_TAG) {
-                    currentTokenType = VocTypes.TAG_NAME
-                } else {
-                    currentTokenType = VocTypes.IDENTIFIER
+                    STATE_IN_TAG_ATTRIBUTES -> {
+                        currentTokenType = VocTypes.IDENTIFIER
+                    }
+                    STATE_IN_CLOSING_TAG -> {
+                        currentTokenType = VocTypes.TAG_NAME
+                    }
+                    else -> {
+                        currentTokenType = VocTypes.IDENTIFIER
+                    }
                 }
             }
 
@@ -310,6 +324,29 @@ class VocLexer : Lexer() {
                     position++
                 }
                 currentTokenType = TokenType.WHITE_SPACE
+            }
+
+            currentChar == '/' -> {
+                if (position + 1 < endOffset && buffer[position + 1] == '/') {
+                    position += 2
+                    while (position < endOffset && buffer[position] != '\n') {
+                        position++
+                    }
+                    currentTokenType = VocTypes.COMMENT
+                } else if (position + 1 < endOffset && buffer[position + 1] == '*') {
+                    position += 2
+                    while (position < endOffset - 1) {
+                        if (buffer[position] == '*' && buffer[position + 1] == '/') {
+                            position += 2
+                            break
+                        }
+                        position++
+                    }
+                    currentTokenType = VocTypes.COMMENT
+                } else {
+                    position++
+                    currentTokenType = VocTypes.DIVIDE
+                }
             }
 
             currentChar == '"' -> {
@@ -472,11 +509,6 @@ class VocLexer : Lexer() {
                 currentTokenType = VocTypes.MULTIPLY
             }
 
-            currentChar == '/' -> {
-                position++
-                currentTokenType = VocTypes.DIVIDE
-            }
-
             currentChar == '%' -> {
                 position++
                 currentTokenType = TokenType.BAD_CHARACTER
@@ -549,6 +581,23 @@ class VocLexer : Lexer() {
                     position++
                 }
                 currentTokenType = TokenType.WHITE_SPACE
+            }
+
+            currentChar == '/' -> {
+                if (position + 1 < endOffset && buffer[position + 1] == '*') {
+                    position += 2
+                    while (position < endOffset - 1) {
+                        if (buffer[position] == '*' && buffer[position + 1] == '/') {
+                            position += 2
+                            break
+                        }
+                        position++
+                    }
+                    currentTokenType = VocTypes.COMMENT
+                } else {
+                    position++
+                    currentTokenType = VocTypes.IDENTIFIER
+                }
             }
 
             currentChar == '{' -> {

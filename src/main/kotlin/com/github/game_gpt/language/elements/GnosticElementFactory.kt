@@ -1,12 +1,23 @@
 package com.github.game_gpt.language.elements
 
+import com.github.game_gpt.language.GnosticScriptLanguage
 import com.github.game_gpt.language.types.NoteTypes
 import com.github.game_gpt.language.types.ValkyrieTypes
 import com.github.game_gpt.language.types.VocTypes
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFileFactory
 
+/**
+ * Gnostic PSI 元素工厂
+ * 负责根据 AST 节点类型创建对应的 PSI 元素实例
+ */
 object GnosticElementFactory {
+
+    /**
+     * 根据 AST 节点类型创建对应的 PSI 元素
+     */
     fun createElement(node: ASTNode): PsiElement {
         val elementType = node.elementType
 
@@ -36,15 +47,15 @@ object GnosticElementFactory {
             ValkyrieTypes.FIELD_DECLARATION -> GnosticElement(node)
             ValkyrieTypes.TYPE_REFERENCE -> GnosticElement(node)
             ValkyrieTypes.SCHEMA_DECLARATION -> GnosticElement(node)
-            ValkyrieTypes.MODEL_DECLARATION -> GnosticElement(node)
-            ValkyrieTypes.SERVICE_DECLARATION -> GnosticElement(node)
-            ValkyrieTypes.MESSAGE_DECLARATION -> GnosticElement(node)
-            ValkyrieTypes.ENUM_DECLARATION -> GnosticElement(node)
-            ValkyrieTypes.ENUMS_DECLARATION -> GnosticElement(node)
+            ValkyrieTypes.MODEL_DECLARATION -> ValkyrieModelElement(node)
+            ValkyrieTypes.SERVICE_DECLARATION -> ValkyrieServiceElement(node)
+            ValkyrieTypes.MESSAGE_DECLARATION -> ValkyrieMessageElement(node)
+            ValkyrieTypes.ENUM_DECLARATION -> ValkyrieEnumsElement(node)
+            ValkyrieTypes.ENUMS_DECLARATION -> ValkyrieEnumsElement(node)
             ValkyrieTypes.TRAIT_DECLARATION -> GnosticElement(node)
             ValkyrieTypes.LET_DECLARATION -> GnosticElement(node)
             ValkyrieTypes.CONST_DECLARATION -> GnosticElement(node)
-            ValkyrieTypes.USING_DECLARATION -> GnosticElement(node)
+            ValkyrieTypes.USING_DECLARATION -> ValkyrieUsingElement(node)
 
             VocTypes.TEMPLATE_SECTION,
             VocTypes.SCRIPT_SECTION,
@@ -104,5 +115,23 @@ object GnosticElementFactory {
 
             else -> GnosticElement(node)
         }
+    }
+
+    /**
+     * 创建标识符 PSI 元素
+     * 用于重命名操作中创建新的标识符节点
+     */
+    fun createIdentifier(name: String, project: Project): PsiElement? {
+        val file = PsiFileFactory.getInstance(project)
+            .createFileFromText("__dummy__.script", GnosticScriptLanguage, "namespace $name;")
+        val namespace = file.firstChild ?: return null
+        var child = namespace.firstChild
+        while (child != null) {
+            if (child.node.elementType == ValkyrieTypes.IDENTIFIER) {
+                return child
+            }
+            child = child.nextSibling
+        }
+        return null
     }
 }

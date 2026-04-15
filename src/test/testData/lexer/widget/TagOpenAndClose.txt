@@ -1,3 +1,7 @@
 TAG_START ('<')
 TAG_NAME ('Layout')
+WHITE_SPACE (' ')
+IDENTIFIER ('style')
+EQUAL ('=')
+LITERAL_STRING ('"flex-1"')
 GT ('>')

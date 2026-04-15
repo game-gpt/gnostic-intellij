@@ -4,8 +4,12 @@ import com.intellij.util.io.KeyDescriptor
 import java.io.DataInput
 import java.io.DataOutput
 
-// 符号键描述符
+/**
+ * 符号键描述符
+ * 负责 GnosticSymbolKey 的序列化、反序列化和比较
+ */
 class GnosticSymbolKeyDescriptor : KeyDescriptor<GnosticSymbolKey> {
+
     override fun save(output: DataOutput, value: GnosticSymbolKey) {
         output.writeUTF(value.name)
         output.writeUTF(value.namespace)

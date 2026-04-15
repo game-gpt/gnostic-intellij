@@ -38,82 +38,34 @@ class VonLexerTests : LexerTestCase() {
     }
 
     fun testBrackets() {
-        doTest("[]", """
-            [ ('[')
-            ] (']')
-        """.trimIndent())
+        doTest("[]")
     }
 
     fun testColonAndComma() {
-        doTest(": ,", """
-            : (':')
-            WHITE_SPACE (' ')
-            , (',')
-        """.trimIndent())
+        doTest(": ,")
     }
 
     fun testEmptyObject() {
-        doTest("{}", """
-            { ('{')
-            } ('}')
-        """.trimIndent())
+        doTest("{}")
     }
 
     fun testBareTrue() {
-        doTest("true", "true ('true')")
+        doTest("true")
     }
 
     fun testBareFalse() {
-        doTest("false", "false ('false')")
+        doTest("false")
     }
 
     fun testBareNull() {
-        doTest("null", "null ('null')")
+        doTest("null")
     }
 
     fun testKeywordsAsKeys() {
-        doTest("{true: true, false: false, null: null}", """
-            { ('{')
-            true ('true')
-            : (':')
-            WHITE_SPACE (' ')
-            true ('true')
-            , (',')
-            WHITE_SPACE (' ')
-            false ('false')
-            : (':')
-            WHITE_SPACE (' ')
-            false ('false')
-            , (',')
-            WHITE_SPACE (' ')
-            null ('null')
-            : (':')
-            WHITE_SPACE (' ')
-            null ('null')
-            } ('}')
-        """.trimIndent())
+        doTest("{true: true, false: false, null: null}")
     }
 
     fun testMixedObject() {
-        doTest("{name: \"test\", count: 42, active: true}", """
-            { ('{')
-            IDENTIFIER ('name')
-            : (':')
-            WHITE_SPACE (' ')
-            LITERAL_STRING ('"test"')
-            , (',')
-            WHITE_SPACE (' ')
-            IDENTIFIER ('count')
-            : (':')
-            WHITE_SPACE (' ')
-            LITERAL_NUMBER ('42')
-            , (',')
-            WHITE_SPACE (' ')
-            IDENTIFIER ('active')
-            : (':')
-            WHITE_SPACE (' ')
-            true ('true')
-            } ('}')
-        """.trimIndent())
+        doTest("{name: \"test\", count: 42, active: true}")
     }
 }
