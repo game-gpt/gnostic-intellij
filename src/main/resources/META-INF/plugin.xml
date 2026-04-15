@@ -200,6 +200,20 @@
 			category="GG Engine"
 		/>
 
+		<!-- Symbol Indexes -->
+		<fileBasedIndex
+			implementationClass="com.github.game_gpt.ide.index.GnosticSymbolIndex"
+		/>
+		<fileBasedIndex
+			implementationClass="com.github.game_gpt.ide.index.GnosticNamespaceIndex"
+		/>
+
+		<!-- Reference Contributors -->
+		<psi.referenceContributor
+			language="GnosticShader"
+			implementationClass="com.github.game_gpt.ide.resolve.GnosticReferenceContributor"
+		/>
+
 	</extensions>
 	<actions>
 		<action id="NewVonFile" class="com.github.game_gpt.ide.actions.VonCreateFile">

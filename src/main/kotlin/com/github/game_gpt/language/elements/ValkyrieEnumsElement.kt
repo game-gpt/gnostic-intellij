@@ -23,7 +23,7 @@ class ValkyrieEnumsElement(node: ASTNode) : ValkyrieElement(node), PsiNameIdenti
      * 获取名称标识符节点
      */
     override fun getNameIdentifier(): PsiElement? {
-        return node.findChildByType(ValkyrieTypes.IDENTIFIER)?.psi
+        return node.findChildByType(ValkyrieTypes.IDENTIFIER)?.let { com.intellij.psi.PsiTreeUtil.getPsiElement(it) }
     }
 
     /**
@@ -33,7 +33,7 @@ class ValkyrieEnumsElement(node: ASTNode) : ValkyrieElement(node), PsiNameIdenti
         val identifier = nameIdentifier ?: return this
         val newIdentifier = GnosticElementFactory.createIdentifier(name, project)
             ?: return this
-        identifier.psi.replace(newIdentifier)
+        (identifier as? com.intellij.psi.PsiElement)?.replace(newIdentifier)
         return this
     }
 

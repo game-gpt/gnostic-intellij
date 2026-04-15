@@ -3,11 +3,14 @@ package com.github.game_gpt.ide.resolve
 import com.github.game_gpt.ide.index.GnosticNamespaceIndex
 import com.github.game_gpt.ide.index.GnosticSymbolInfo
 import com.github.game_gpt.language.elements.ValkyrieNamespaceElement
+import com.github.game_gpt.language.elements.ValkyrieUsingElement
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiReference
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.FileBasedIndex
 
 /**
@@ -16,7 +19,7 @@ import com.intellij.util.indexing.FileBasedIndex
  * 例如 `using my_shaders::common;` 中的 my_shaders::common 引用
  */
 class UsingReference(
-    private val element: PsiElement,
+    private val element: ValkyrieUsingElement,
     private val range: TextRange
 ) : PsiReference {
 
@@ -25,26 +28,15 @@ class UsingReference(
     override fun getRangeInElement(): TextRange = range
 
     override fun resolve(): PsiElement? {
-        val namespacePath = element.text ?: return null
+        val namespacePath = element.getImportPath() ?: return null
         val project = element.project
 
         val index = FileBasedIndex.getInstance()
-        val infos = mutableListOf<GnosticSymbolInfo>()
+        val scope = GlobalSearchScope.allScope(project)
 
-        index.processValues(
-            GnosticNamespaceIndex.NAME,
-            namespacePath,
-            null,
-            { _, info ->
-                infos.add(info)
-                true
-            },
-            com.intellij.psi.search.GlobalSearchScope.allScope(project)
-        )
+        val values = index.getValues(GnosticNamespaceIndex.NAME, namespacePath, scope)
+        val info = values.firstOrNull() ?: return null
 
-        if (infos.isEmpty()) return null
-
-        val info = infos.firstOrNull() ?: return null
         return navigateToElement(project, info)
     }
 
@@ -52,8 +44,8 @@ class UsingReference(
      * 根据符号信息导航到对应的 namespace PSI 元素
      */
     private fun navigateToElement(project: Project, info: GnosticSymbolInfo): PsiElement? {
-        val virtualFile = com.intellij.openapi.vfs.LocalFileSystem.getInstance()
-            .findFileByPath(info.file)
+        val virtualFile = VirtualFileManager.getInstance()
+            .findFileByUrl(info.fileUrl)
             ?: return null
 
         val psiFile = PsiManager.getInstance(project).findFile(virtualFile) ?: return null
@@ -64,13 +56,16 @@ class UsingReference(
             if (current is ValkyrieNamespaceElement) {
                 return current
             }
+            if (current.node?.elementType == com.github.game_gpt.language.types.ValkyrieTypes.NAMESPACE_DECLARATION) {
+                return current
+            }
             current = current.parent
         }
 
-        return element.parent as? ValkyrieNamespaceElement
+        return null
     }
 
-    override fun getCanonicalText(): String = element.text
+    override fun getCanonicalText(): String = element.getImportPath() ?: ""
 
     override fun handleElementRename(newElementName: String): PsiElement = element
 

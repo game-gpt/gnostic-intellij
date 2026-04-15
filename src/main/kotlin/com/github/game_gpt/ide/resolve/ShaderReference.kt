@@ -1,16 +1,19 @@
 package com.github.game_gpt.ide.resolve
 
 import com.github.game_gpt.ide.file.GnosticShaderFile
+import com.github.game_gpt.ide.index.GnosticNamespaceIndex
 import com.github.game_gpt.ide.index.GnosticSymbolIndex
 import com.github.game_gpt.ide.index.GnosticSymbolInfo
+import com.github.game_gpt.ide.index.GnosticSymbolKey
 import com.github.game_gpt.ide.index.GnosticSymbolType
 import com.github.game_gpt.language.elements.ValkyrieShaderElement
-import com.github.game_gpt.language.types.ValkyrieTypes
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiReference
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.FileBasedIndex
 
 /**
@@ -59,43 +62,67 @@ class ShaderReference(
      */
     private fun resolveAcrossFiles(shaderName: String, project: Project): PsiElement? {
         val index = FileBasedIndex.getInstance()
-        val infos = mutableListOf<GnosticSymbolInfo>()
-
-        index.processValues(
-            GnosticSymbolIndex.NAME,
-            shaderName,
-            null,
-            { _, info ->
-                if (info.type == GnosticSymbolType.SHADER) {
-                    infos.add(info)
-                }
-                true
-            },
-            com.intellij.psi.search.GlobalSearchScope.allScope(project)
-        )
-
-        if (infos.isEmpty()) return null
+        val scope = GlobalSearchScope.allScope(project)
 
         val containingFile = element.containingFile as? GnosticShaderFile
         val currentNamespace = containingFile?.getNamespace() ?: ""
         val usingPaths = containingFile?.getUsingPaths() ?: emptyList()
 
-        val prioritizedInfo = infos.firstOrNull { it.namespace == currentNamespace }
+        val prioritizedInfo = findInNamespace(index, shaderName, currentNamespace, scope, project)
             ?: usingPaths.firstNotNullOfOrNull { ns ->
-                infos.firstOrNull { it.namespace == ns }
+                findInNamespace(index, shaderName, ns, scope, project)
             }
-            ?: infos.firstOrNull { it.namespace.isEmpty() }
-            ?: infos.firstOrNull()
+            ?: findInNamespace(index, shaderName, "", scope, project)
+            ?: findGlobal(index, shaderName, scope, project)
 
         return prioritizedInfo?.let { navigateToElement(project, it) }
+    }
+
+    /**
+     * 在指定命名空间中查找 shader
+     */
+    private fun findInNamespace(
+        index: FileBasedIndex<GnosticSymbolKey, GnosticSymbolInfo>,
+        name: String,
+        namespace: String,
+        scope: GlobalSearchScope,
+        project: Project
+    ): GnosticSymbolInfo? {
+        val key = GnosticSymbolKey(name, namespace)
+        val values = index.getValues(GnosticSymbolIndex.NAME, key, scope)
+        return values.firstOrNull { it.type == GnosticSymbolType.SHADER }
+    }
+
+    /**
+     * 全局搜索 shader（遍历所有命名空间）
+     */
+    private fun findGlobal(
+        index: FileBasedIndex<GnosticSymbolKey, GnosticSymbolInfo>,
+        name: String,
+        scope: GlobalSearchScope,
+        project: Project
+    ): GnosticSymbolInfo? {
+        var result: GnosticSymbolInfo? = null
+        index.processAllKeys(GnosticSymbolIndex.NAME, project) { key ->
+            if (key.name == name) {
+                val values = index.getValues(GnosticSymbolIndex.NAME, key, scope)
+                val shader = values.firstOrNull { it.type == GnosticSymbolType.SHADER }
+                if (shader != null) {
+                    result = shader
+                    return@processAllKeys false
+                }
+            }
+            true
+        }
+        return result
     }
 
     /**
      * 根据符号信息导航到对应的 PSI 元素
      */
     private fun navigateToElement(project: Project, info: GnosticSymbolInfo): PsiElement? {
-        val virtualFile = com.intellij.openapi.vfs.LocalFileSystem.getInstance()
-            .findFileByPath(info.file)
+        val virtualFile = VirtualFileManager.getInstance()
+            .findFileByUrl(info.fileUrl)
             ?: return null
 
         val psiFile = PsiManager.getInstance(project).findFile(virtualFile) ?: return null
@@ -106,10 +133,13 @@ class ShaderReference(
             if (current is ValkyrieShaderElement && current.getShaderName() == info.name) {
                 return current
             }
+            if (current.node?.elementType == com.github.game_gpt.language.types.ValkyrieTypes.SHADER_DECLARATION) {
+                return current
+            }
             current = current.parent
         }
 
-        return element.parent as? ValkyrieShaderElement
+        return null
     }
 
     override fun getCanonicalText(): String = element.text

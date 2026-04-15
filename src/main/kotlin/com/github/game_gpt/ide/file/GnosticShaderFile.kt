@@ -25,7 +25,7 @@ class GnosticShaderFile(view: FileViewProvider) : GnosticFile(view, GnosticShade
     fun getNamespace(): String? {
         for (child in children) {
             if (child is ValkyrieNamespaceElement) {
-                return child.getNamespacePath()
+                return child.getName()
             }
         }
         return null

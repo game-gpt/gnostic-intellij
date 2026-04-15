@@ -5,8 +5,8 @@ import java.io.DataInput
 import java.io.DataOutput
 
 /**
- * 符号信息数据外部化器
- * 负责 GnosticSymbolInfo 的序列化和反序列化
+ * GnosticSymbolInfo 数据外部化器
+ * 用于将 GnosticSymbolInfo 序列化和反序列化到索引存储
  */
 class GnosticSymbolInfoExternalizer : DataExternalizer<GnosticSymbolInfo> {
 
@@ -22,10 +22,17 @@ class GnosticSymbolInfoExternalizer : DataExternalizer<GnosticSymbolInfo> {
     override fun read(input: DataInput): GnosticSymbolInfo {
         val name = input.readUTF()
         val namespace = input.readUTF()
-        val type = GnosticSymbolType.valueOf(input.readUTF())
+        val typeName = input.readUTF()
         val fileUrl = input.readUTF()
         val offset = input.readInt()
         val length = input.readInt()
-        return GnosticSymbolInfo(name, namespace, type, fileUrl, offset, length)
+        return GnosticSymbolInfo(
+            name = name,
+            namespace = namespace,
+            type = GnosticSymbolType.valueOf(typeName),
+            fileUrl = fileUrl,
+            offset = offset,
+            length = length
+        )
     }
 }

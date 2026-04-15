@@ -18,7 +18,7 @@ class VonLexerTests : LexerTestCase() {
     }
 
     fun testStringLiteral() {
-        doTest("\"hello\"")
+        doTest("\"hello von!\"")
     }
 
     fun testNumberLiteral() {
@@ -34,11 +34,7 @@ class VonLexerTests : LexerTestCase() {
     }
 
     fun testBraces() {
-        doTest("{}")
-    }
-
-    fun testBrackets() {
-        doTest("[]")
+        doTest("[] {}")
     }
 
     fun testColonAndComma() {

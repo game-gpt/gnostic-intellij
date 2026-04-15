@@ -26,5 +26,11 @@ class ValkyrieNamespaceElement(node: ASTNode) : ValkyrieElement(node) {
         return parts.takeIf { it.isNotEmpty() }?.joinToString(".")
     }
 
+    /**
+     * 获取命名空间路径，与 getName() 等价
+     * 提供更语义化的方法名，用于需要明确获取路径的场景
+     */
+    fun getNamespacePath(): String? = getName()
+
     override fun toString(): String = "Namespace ${getName() ?: "<anonymous>"}"
 }

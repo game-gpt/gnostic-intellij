@@ -33,7 +33,7 @@ class ValkyrieModelElement(node: ASTNode) : ValkyrieElement(node), PsiNameIdenti
         val identifier = nameIdentifier ?: return this
         val newIdentifier = com.github.game_gpt.language.elements.GnosticElementFactory.createIdentifier(name, project)
             ?: return this
-        identifier.psi.replace(newIdentifier)
+        identifier.replace(newIdentifier)
         return this
     }
 

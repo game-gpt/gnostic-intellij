@@ -50,17 +50,17 @@ class GnosticNamespaceIndex : FileBasedIndexExtension<String, GnosticSymbolInfo>
         return DataIndexer { inputData: FileContent ->
             val result = mutableMapOf<String, GnosticSymbolInfo>()
             val psiFile = inputData.psiFile
-            val filePath = inputData.file.path
+            val fileUrl = inputData.file.url
 
             for (child in psiFile.children) {
                 if (child is ValkyrieNamespaceElement) {
-                    val namespacePath = child.getNamespacePath()
+                    val namespacePath = child.getName()
                     if (namespacePath != null) {
                         result[namespacePath] = GnosticSymbolInfo(
                             name = namespacePath,
                             namespace = namespacePath,
                             type = GnosticSymbolType.NAMESPACE,
-                            file = filePath,
+                            fileUrl = fileUrl,
                             offset = child.textOffset,
                             length = child.textLength
                         )

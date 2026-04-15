@@ -33,7 +33,7 @@ class ValkyrieServiceElement(node: ASTNode) : ValkyrieElement(node), PsiNameIden
         val identifier = nameIdentifier ?: return this
         val newIdentifier = GnosticElementFactory.createIdentifier(name, project)
             ?: return this
-        identifier.psi.replace(newIdentifier)
+        identifier.replace(newIdentifier)
         return this
     }
 
