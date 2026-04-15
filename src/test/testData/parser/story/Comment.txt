@@ -1,0 +1,6 @@
+FILE
+  PsiComment(COMMENT)('# 这是单行注释')
+  PsiElement(NEWLINE)('\n')
+  PsiComment(COMMENT)('# 注释可以包含中文和 English')
+  PsiElement(NEWLINE)('\n')
+  PsiComment(COMMENT)('# 注释可以包含特殊字符：！@#￥%')

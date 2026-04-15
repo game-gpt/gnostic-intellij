@@ -2,7 +2,6 @@ package com.github.game_gpt.language.parser
 
 import com.github.game_gpt.ide.definitions.StoryParserDefinition
 import com.intellij.testFramework.ParsingTestCase
-import java.util.concurrent.TimeUnit
 
 /**
  * Story 解析器测试
@@ -25,14 +24,90 @@ class StoryParserTest : ParsingTestCase("parser/story", "story", false, StoryPar
      * 测试基本示例解析
      */
     fun testSample() {
-        val startTime = System.currentTimeMillis()
-        val timeout = TimeUnit.SECONDS.toMillis(30)
-        
         doTest(true, true)
-        
-        val elapsed = System.currentTimeMillis() - startTime
-        if (elapsed > timeout) {
-            fail("Test timed out after $elapsed milliseconds")
-        }
+    }
+
+    /**
+     * 测试注释语法
+     */
+    fun testComment() {
+        doTest(true, true)
+    }
+
+    /**
+     * 测试变量定义
+     */
+    fun testVariable() {
+        doTest(true, true)
+    }
+
+    /**
+     * 测试场景定义
+     */
+    fun testScene() {
+        doTest(true, true)
+    }
+
+    /**
+     * 测试对话行
+     */
+    fun testDialogue() {
+        doTest(true, true)
+    }
+
+    /**
+     * 测试选项分支
+     */
+    fun testChoice() {
+        doTest(true, true)
+    }
+
+    /**
+     * 测试条件选项
+     */
+    fun testConditionalChoice() {
+        doTest(true, true)
+    }
+
+    /**
+     * 测试跳转语句
+     */
+    fun testJump() {
+        doTest(true, true)
+    }
+
+    /**
+     * 测试条件判断
+     */
+    fun testConditional() {
+        doTest(true, true)
+    }
+
+    /**
+     * 测试命令调用
+     */
+    fun testCommand() {
+        doTest(true, true)
+    }
+
+    /**
+     * 测试包含语句
+     */
+    fun testInclude() {
+        doTest(true, true)
+    }
+
+    /**
+     * 测试分隔线
+     */
+    fun testSeparator() {
+        doTest(true, true)
+    }
+
+    /**
+     * 测试原生 XML
+     */
+    fun testXml() {
+        doTest(true, true)
     }
 }

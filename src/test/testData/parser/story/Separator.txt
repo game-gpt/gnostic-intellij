@@ -1,0 +1,10 @@
+FILE
+  GnosticElement(SEPARATOR)
+    PsiElement(HORIZONTAL_RULE)('---')
+    PsiElement(NEWLINE)('\n')
+  GnosticElement(TEXT_LINE)
+    PsiElement(IDENTIFIER)('这是分隔后的内容')
+  PsiElement(BAD_CHARACTER)('。')
+  PsiElement(NEWLINE)('\n')
+  GnosticElement(SEPARATOR)
+    PsiElement(HORIZONTAL_RULE)('---')
