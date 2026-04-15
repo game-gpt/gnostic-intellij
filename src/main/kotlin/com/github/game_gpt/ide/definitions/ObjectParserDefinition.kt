@@ -28,7 +28,7 @@ class ObjectParserDefinition : ParserDefinition {
     }
 
     override fun getFileNodeType(): IFileElementType {
-        return FILE
+        return GnosticObjectFileType
     }
 
     override fun getCommentTokens(): TokenSet {
@@ -50,8 +50,10 @@ class ObjectParserDefinition : ParserDefinition {
     override fun getWhitespaceTokens(): TokenSet {
         return TokenSet.create(TokenType.WHITE_SPACE)
     }
+}
 
-    companion object {
-        val FILE = IFileElementType(GnosticObjectLanguage)
+object GnosticObjectFileType : IFileElementType(GnosticObjectLanguage) {
+    override fun toString(): String {
+        return "GnosticObjectFile"
     }
 }

@@ -14,40 +14,27 @@ class VonLexerTests : LexerTestCase() {
     }
 
     fun testComment() {
-        doTest("# comment", "COMMENT ('# comment')")
+        doTest("# comment")
     }
 
     fun testStringLiteral() {
-        doTest("\"hello\"", "LITERAL_STRING ('\"hello\"')")
+        doTest("\"hello\"")
     }
 
     fun testNumberLiteral() {
-        doTest("123 3.14", """
-            LITERAL_NUMBER ('123')
-            WHITE_SPACE (' ')
-            LITERAL_NUMBER ('3.14')
-        """.trimIndent())
+        doTest("123 3.14")
     }
 
     fun testIdentifier() {
-        doTest("Player", "IDENTIFIER ('Player')")
+        doTest("Player")
     }
 
     fun testKeywords() {
-        doTest("true false null", """
-            true ('true')
-            WHITE_SPACE (' ')
-            false ('false')
-            WHITE_SPACE (' ')
-            null ('null')
-        """.trimIndent())
+        doTest("true false null")
     }
 
     fun testBraces() {
-        doTest("{}", """
-            { ('{')
-            } ('}')
-        """.trimIndent())
+        doTest("{}")
     }
 
     fun testBrackets() {

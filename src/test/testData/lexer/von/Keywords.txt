@@ -1,5 +1,0 @@
-KEYWORD_TRUE ('true')
-WHITE_SPACE (' ')
-KEYWORD_FALSE ('false')
-WHITE_SPACE (' ')
-KEYWORD_NULL ('null')

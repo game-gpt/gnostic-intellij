@@ -56,3 +56,4 @@ class SchemaParserDefinition : ParserDefinition {
         val FILE = IFileElementType(GnosticSchemaLanguage)
     }
 }
+

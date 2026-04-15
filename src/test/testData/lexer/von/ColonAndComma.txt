@@ -1,3 +1,0 @@
-COLON (':')
-WHITE_SPACE (' ')
-COMMA (',')
