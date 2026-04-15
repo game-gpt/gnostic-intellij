@@ -48,8 +48,7 @@ class GnosticFoldingBuilder : FoldingBuilder {
      */
     private fun createFoldingVisitor(fileExtension: String?, document: Document?, descriptors: MutableList<FoldingDescriptor>): GnosticFoldingVisitor? {
         return when (fileExtension) {
-            "von" -> VonFoldingVisitor(document, descriptors)
-            "script", "shader" -> ValkyrieFoldingVisitor(document, descriptors)
+            "von", "script", "shader" -> GnosticFoldingVisitor(document, descriptors)
             else -> null
         }
     }
