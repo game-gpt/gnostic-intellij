@@ -1,82 +1,127 @@
 package com.github.game_gpt.ide.resolve
 
+import com.github.game_gpt.ide.index.GnosticSymbolIndex
+import com.github.game_gpt.ide.index.GnosticSymbolInfo
+import com.github.game_gpt.language.types.ValkyrieTypes
 import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiReference
 
 /**
- * Gnostic 引用实现
- * 用于支持快速导航功能
+ * Gnostic 符号引用实现
+ * 支持跨文件引用解析，使 Go to Definition 功能可以导航到符号定义处
+ *
+ * 支持的引用类型：
+ * - 类型引用：model/service/message/enum 名称
+ * - 限定名引用：namespace::SymbolName 形式
  */
-class GnosticReference(private val element: PsiElement) : PsiReference {
-    /**
-     * 获取引用元素
-     * @return 引用元素
-     */
+class GnosticReference(
+    private val element: PsiElement,
+    /** 引用是否在类型引用上下文中 */
+    private val isTypeReference: Boolean = false
+) : PsiReference {
+
+    private val resolver: GnosticSymbolResolver by lazy {
+        GnosticSymbolResolver(element.project)
+    }
+
     override fun getElement(): PsiElement {
         return element
     }
 
-    /**
-     * 获取引用在元素中的文本范围
-     * @return 文本范围
-     */
     override fun getRangeInElement(): TextRange {
         return TextRange.from(0, element.textLength)
     }
 
-    /**
-     * 解析引用
-     * @return 解析后的元素
-     */
     override fun resolve(): PsiElement? {
-        // 这里实现引用解析逻辑
-        // 例如：查找符号定义
-        return null
+        val name = element.text ?: return null
+        val qualifierNamespace = extractQualifierNamespace()
+
+        val candidates = resolver.resolve(name, element, qualifierNamespace)
+        if (candidates.isEmpty()) return null
+
+        val symbolInfo = candidates.first()
+        return resolveToPsiElement(symbolInfo)
     }
 
-    /**
-     * 获取引用的规范文本
-     * @return 规范文本
-     */
     override fun getCanonicalText(): @NlsSafe String {
         return element.text
     }
 
-    /**
-     * 处理元素重命名
-     * @param newElementName 新元素名称
-     * @return 重命名后的元素
-     */
     override fun handleElementRename(newElementName: String): PsiElement {
         return element
     }
 
-    /**
-     * 绑定到元素
-     * @param element 目标元素
-     * @return 绑定后的元素
-     */
-    override fun bindToElement(element: PsiElement): PsiElement {
-        return this.element
+    override fun bindToElement(newElement: PsiElement): PsiElement {
+        return element
     }
 
-    /**
-     * 检查是否引用到指定元素
-     * @param element 目标元素
-     * @return 是否引用到
-     */
-    override fun isReferenceTo(element: PsiElement): Boolean {
-        return resolve() == element
+    override fun isReferenceTo(target: PsiElement): Boolean {
+        val resolved = resolve() ?: return false
+        return resolved == target || resolved.manager.areElementsEquivalent(resolved, target)
     }
 
-    /**
-     * 检查是否为软引用
-     * @return 是否为软引用
-     */
     override fun isSoft(): Boolean {
         return false
     }
 
+    /**
+     * 提取限定名前缀
+     * 对于 game_backend::Player 形式，提取 "game_backend" 作为限定命名空间
+     */
+    private fun extractQualifierNamespace(): String? {
+        val parent = element.parent
+        if (parent?.node?.elementType != ValkyrieTypes.TYPE_REFERENCE) return null
+
+        val identifiers = parent.node.getChildren(null)
+            .filter { it.elementType == ValkyrieTypes.IDENTIFIER }
+            .toList()
+
+        if (identifiers.size < 2) return null
+
+        val currentIndex = identifiers.indexOfFirst { it.text == element.text }
+        if (currentIndex <= 0) return null
+
+        val doubleColon = parent.node.getChildren(null)
+            .any { it.elementType == ValkyrieTypes.DOUBLE_COLON }
+
+        if (doubleColon) {
+            return identifiers[0].text
+        }
+
+        val dot = parent.node.getChildren(null)
+            .any { it.elementType == ValkyrieTypes.DOT }
+
+        if (dot && identifiers.size >= 2) {
+            return identifiers.subList(0, currentIndex).joinToString(".") { it.text }
+        }
+
+        return null
+    }
+
+    /**
+     * 将符号信息解析为 PSI 元素
+     */
+    private fun resolveToPsiElement(symbolInfo: GnosticSymbolInfo): PsiElement? {
+        val virtualFile = VirtualFileManager.getInstance().findFileByUrl(symbolInfo.fileUrl) ?: return null
+        val psiFile = PsiManager.getInstance(element.project).findFile(virtualFile) ?: return null
+
+        val leafElement = psiFile.findElementAt(symbolInfo.offset) ?: return null
+
+        var current: PsiElement? = leafElement
+        while (current != null) {
+            if (current.textOffset == symbolInfo.offset && current.textLength == symbolInfo.length) {
+                return current
+            }
+            if (current.node?.elementType in ValkyrieTypes.DECLARATIONS) {
+                return current
+            }
+            current = current.parent
+        }
+
+        return null
+    }
 }

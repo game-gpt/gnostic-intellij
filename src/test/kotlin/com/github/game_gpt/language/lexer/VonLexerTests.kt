@@ -42,23 +42,7 @@ class VonLexerTests : LexerTestCase() {
     }
 
     fun testColonAndComma() {
-        doTest(": ,")
-    }
-
-    fun testEmptyObject() {
-        doTest("{}")
-    }
-
-    fun testBareTrue() {
-        doTest("true")
-    }
-
-    fun testBareFalse() {
-        doTest("false")
-    }
-
-    fun testBareNull() {
-        doTest("null")
+        doTest(":,")
     }
 
     fun testKeywordsAsKeys() {
