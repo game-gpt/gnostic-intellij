@@ -1,11 +1,12 @@
 package com.github.game_gpt.ide.definitions
 
+import com.github.game_gpt.ide.config.NotedownLanguageConfig
 import com.github.game_gpt.ide.file.GnosticStoryFile
 import com.github.game_gpt.language.GnosticStoryLanguage
-import com.github.game_gpt.language.lexer.VonLexer
 import com.github.game_gpt.language.elements.GnosticElementFactory
-import com.github.game_gpt.language.parser.VonParser
-import com.github.game_gpt.language.types.VonTypes
+import com.github.game_gpt.language.lexer.NoteLexer
+import com.github.game_gpt.language.parser.NoteParser
+import com.github.game_gpt.language.types.NoteTypes
 import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition
 import com.intellij.lang.PsiParser
@@ -18,40 +19,72 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 
+/**
+ * Story 语言的解析器定义，实现 IntelliJ 的 ParserDefinition 接口。
+ * 
+ * Story 格式基于 Notedown 语法，用于编写游戏中的对话、剧情和交互内容。
+ */
 class StoryParserDefinition : ParserDefinition {
+    /**
+     * 创建 Story 语言的词法分析器。
+     */
     override fun createLexer(project: Project): Lexer {
-        return VonLexer()
+        return NoteLexer(NotedownLanguageConfig(supportXmlExtension = true))
     }
 
+    /**
+     * 创建 Story 语言的语法解析器。
+     */
     override fun createParser(project: Project): PsiParser {
-        return VonParser()
+        return NoteParser(NotedownLanguageConfig(supportXmlExtension = true))
     }
 
+    /**
+     * 获取文件节点的元素类型。
+     */
     override fun getFileNodeType(): IFileElementType {
         return FILE
     }
 
+    /**
+     * 获取注释类型的 Token 集合。
+     */
     override fun getCommentTokens(): TokenSet {
-        return VonTypes.COMMENTS
+        return NoteTypes.COMMENTS
     }
 
+    /**
+     * 获取字符串字面量类型的 Token 集合。
+     */
     override fun getStringLiteralElements(): TokenSet {
-        return TokenSet.create(VonTypes.LITERAL_STRING)
+        return TokenSet.create(NoteTypes.STRING)
     }
 
+    /**
+     * 根据 AST 节点创建对应的 PSI 元素。
+     */
     override fun createElement(node: ASTNode): PsiElement {
         return GnosticElementFactory.createElement(node)
     }
 
+    /**
+     * 根据文件视图提供者创建 Story 语言的 PSI 文件。
+     */
     override fun createFile(viewProvider: FileViewProvider): PsiFile {
         return GnosticStoryFile(viewProvider)
     }
 
+    /**
+     * 获取空白字符类型的 Token 集合。
+     */
     override fun getWhitespaceTokens(): TokenSet {
         return TokenSet.create(TokenType.WHITE_SPACE)
     }
 
     companion object {
+        /**
+         * Story 语言的文件元素类型。
+         */
         val FILE = IFileElementType(GnosticStoryLanguage)
     }
 }

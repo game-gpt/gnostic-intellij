@@ -4,8 +4,9 @@ import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilder
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
+import com.intellij.openapi.project.DumbAware
 
-class GnosticFoldingBuilder : FoldingBuilder {
+class GnosticFoldingBuilder : FoldingBuilder, DumbAware {
     override fun buildFoldRegions(node: ASTNode, document: Document): Array<FoldingDescriptor> {
         val descriptors = mutableListOf<FoldingDescriptor>()
         val psiElement = node.psi

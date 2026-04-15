@@ -392,7 +392,7 @@ class NoteLexer(val config: NotedownLanguageConfig) : Lexer() {
             }
 
             else -> {
-                if (isCJKChar(ch)) {
+                if (isCJKChar(ch) || isChinesePunctuation(ch)) {
                     parseText()
                 } else {
                     position++
@@ -553,6 +553,27 @@ class NoteLexer(val config: NotedownLanguageConfig) : Lexer() {
      */
     private fun isCJKChar(ch: Char): Boolean {
         return ch in '\u4e00'..'\u9fff' || ch in '\u3400'..'\u4dbf' || ch in '\uf900'..'\ufaff'
+    }
+
+    /**
+     * 判断字符是否为中文标点符号
+     *
+     * 包含常用的中文标点：，。！？、；""''
+     */
+    private fun isChinesePunctuation(ch: Char): Boolean {
+        return when (ch) {
+            '\uFF0C' -> true // ， 全角逗号
+            '\u3002' -> true // 。 句号
+            '\uFF01' -> true // ！ 全角感叹号
+            '\uFF1F' -> true // ？ 全角问号
+            '\u3001' -> true // 、 顿号
+            '\uFF1B' -> true // ； 全角分号
+            '\u201C' -> true // " 左双引号
+            '\u201D' -> true // " 右双引号
+            '\u2018' -> true // ' 左单引号
+            '\u2019' -> true // ' 右单引号
+            else -> false
+        }
     }
 
     override fun getCurrentPosition(): LexerPosition {

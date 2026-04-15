@@ -21,4 +21,36 @@ class ShaderParserTest : ParsingTestCase("parser/shader", "shader", false, Shade
             fail("Test timed out after $elapsed milliseconds")
         }
     }
+
+    fun testComputeFunction() {
+        doTest("compute/ComputeFunction")
+    }
+
+    fun testFallbackBlock() {
+        doTest("fallback/FallbackBlock")
+    }
+
+    fun testFragmentFunction() {
+        doTest("fragment/FragmentFunction")
+    }
+
+    fun testShaderDeclaration() {
+        doTest("shader/ShaderDeclaration")
+    }
+
+    fun testShaderProperty() {
+        doTest("property/ShaderProperty")
+    }
+
+    fun testRenderStates() {
+        doTest("render_states/RenderStates")
+    }
+
+    fun testUniformsBlock() {
+        doTest("uniforms/UniformsBlock")
+    }
+
+    fun testVertexFunction() {
+        doTest("vertex/VertexFunction")
+    }
 }

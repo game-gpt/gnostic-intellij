@@ -21,4 +21,32 @@ class ScriptParserTest : ParsingTestCase("parser/script", "script", false, Scrip
             fail("Test timed out after $elapsed milliseconds")
         }
     }
+
+    fun testClassDeclaration() {
+        doTest("class/ClassDeclaration")
+    }
+
+    fun testComments() {
+        doTest("comment/Comments")
+    }
+
+    fun testControlFlow() {
+        doTest("control/ControlFlow")
+    }
+
+    fun testExpressions() {
+        doTest("expression/Expressions")
+    }
+
+    fun testFunctionDeclaration() {
+        doTest("function/FunctionDeclaration")
+    }
+
+    fun testNamespaceDeclaration() {
+        doTest("namespace/NamespaceDeclaration")
+    }
+
+    fun testVariableDeclaration() {
+        doTest("variable/VariableDeclaration")
+    }
 }

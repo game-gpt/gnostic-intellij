@@ -21,4 +21,32 @@ class SchemaParserTest : ParsingTestCase("parser/schema", "schema", false, Schem
             fail("Test timed out after $elapsed milliseconds")
         }
     }
+
+    fun testAnnotation() {
+        doTest("annotation/Annotation")
+    }
+
+    fun testSchemaDeclaration() {
+        doTest("schema/SchemaDeclaration")
+    }
+
+    fun testEnumDeclaration() {
+        doTest("enum/EnumDeclaration")
+    }
+
+    fun testFieldDeclaration() {
+        doTest("field/FieldDeclaration")
+    }
+
+    fun testMessageDeclaration() {
+        doTest("message/MessageDeclaration")
+    }
+
+    fun testModelDeclaration() {
+        doTest("model/ModelDeclaration")
+    }
+
+    fun testServiceDeclaration() {
+        doTest("service/ServiceDeclaration")
+    }
 }
