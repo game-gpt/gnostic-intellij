@@ -23,7 +23,7 @@ class VonLexerTests : GnosticLexerTest() {
     }
 
     fun testComment() {
-        doFileTest("comment.von")
+        doFileTest("lexer/von/comment.von")
         doTest("# comment")
     }
 
@@ -71,13 +71,9 @@ abstract class GnosticLexerTest : UsefulTestCase() {
         val expected = getPathToTestDataFile(this.expectedFileExtension)
         doTest(source, expected, lexer)
     }
-    protected fun doTest(source: String, expected: String? = null, lexer: Lexer = createLexer()) {
+    protected fun doTest(source: String, expected: String, lexer: Lexer = createLexer()) {
         val result = printTokens(lexer, source, 0)
-        if (expected != null) {
-            assertSameLines(expected, result)
-        } else {
-            assertSameLinesWithFile(getPathToTestDataFile(this.expectedFileExtension), result)
-        }
+        assertSameLines(expected, result)
     }
 
     protected fun printTokens(lexer: Lexer, text: CharSequence, start: Int): String {
