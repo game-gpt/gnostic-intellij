@@ -2,14 +2,17 @@ package com.github.game_gpt.language.lexer
 
 import com.github.game_gpt.ide.config.ValkyrieLanguageConfig
 import com.intellij.lexer.Lexer
+import com.intellij.testFramework.LexerTestCase
 
-class ValkyrieLexerTests : GnosticLexerTest() {
+class ValkyrieLexerTests : LexerTestCase() {
 
     override fun createLexer(): Lexer {
         return ValkyrieLexer(ValkyrieLanguageConfig())
     }
 
-    override val dirPath: String = "src/test/testData/lexer/script"
+    override fun getDirPath(): String {
+        return "src/test/testData/lexer/script"
+    }
 
     fun testKeywords() {
         doTest("class fn let if else loop while return true false null trait enum")

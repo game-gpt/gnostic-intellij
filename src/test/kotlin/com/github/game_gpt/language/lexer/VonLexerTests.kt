@@ -65,12 +65,19 @@ class VonLexerTests : GnosticLexerTest() {
 
 
 abstract class GnosticLexerTest : UsefulTestCase() {
+    protected val testDataDir: String
+        get() {
+            return "src/test/testData"
+        }
+
     protected val expectedFileExtension: String
         get() = ".txt"
 
+    protected abstract fun createLexer(): Lexer
+
     protected fun doFileTest(path: String, lexer: Lexer = createLexer()) {
-        val source = FileUtil.loadFile(File(path))
-        val expected = getPathToTestDataFile(this.expectedFileExtension)
+        val source = FileUtil.loadFile(File("$testDataDir/$path"))
+        val expected = FileUtil.loadFile(File("$testDataDir/$path$expectedFileExtension"))
         doTest(source, expected, lexer)
     }
     protected fun doTest(source: String, expected: String, lexer: Lexer = createLexer()) {
@@ -82,9 +89,6 @@ abstract class GnosticLexerTest : UsefulTestCase() {
         return GnosticLexerTest.Companion.printTokens(text, start, lexer)
     }
 
-    protected fun getPathToTestDataFile(extension: String): String {
-        return IdeaTestExecutionPolicy.getHomePathWithPolicy() + "/" + this.dirPath + "/" + getTestName(true) + extension
-    }
 
 
 
@@ -147,26 +151,6 @@ abstract class GnosticLexerTest : UsefulTestCase() {
         }
     }
 
-
-    protected fun loadTestDataFile(fileExt: String): String {
-        val fileName = getPathToTestDataFile(fileExt)
-        var text = ""
-        try {
-            val fileText: String = FileUtil.loadFile(File(fileName))
-            text = StringUtil.convertLineSeparators(if (shouldTrim()) fileText.trim { it <= ' ' } else fileText)
-        } catch (e: IOException) {
-            fail("can't load file " + fileName + ": " + e.message)
-        }
-        return text
-    }
-
-    protected fun shouldTrim(): Boolean {
-        return true
-    }
-
-    protected abstract fun createLexer(): Lexer
-
-    protected abstract val dirPath: String
 
     companion object {
         private fun tokenize(

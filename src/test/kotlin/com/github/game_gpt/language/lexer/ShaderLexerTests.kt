@@ -2,14 +2,17 @@ package com.github.game_gpt.language.lexer
 
 import com.github.game_gpt.ide.config.ValkyrieLanguageConfig
 import com.intellij.lexer.Lexer
+import com.intellij.testFramework.LexerTestCase
 
-class ShaderLexerTests : GnosticLexerTest() {
+class ShaderLexerTests : LexerTestCase() {
 
     override fun createLexer(): Lexer {
         return ValkyrieLexer(ValkyrieLanguageConfig(supportShaderExtension = true))
     }
 
-    override val dirPath: String = "src/test/testData/lexer/shader"
+    override fun getDirPath(): String {
+        return "src/test/testData/lexer/shader"
+    }
 
     fun testShaderKeyword() {
         doTest("shader")
