@@ -22,6 +22,8 @@ class VonLexerTests : GnosticLexerTest() {
         return VonLexer()
     }
 
+    override val dirPath: String = "src/test/testData/lexer/von"
+
     fun testComment() {
         doFileTest("lexer/von/comment.von")
         doTest("# comment")
@@ -196,7 +198,7 @@ abstract class GnosticLexerTest : UsefulTestCase() {
                 result.append(
                     GnosticLexerTest.Companion.printSingleToken(
                         text,
-                        tokenType,
+                        tokenType!!,
                         lexer.getTokenStart(),
                         lexer.getTokenEnd()
                     )

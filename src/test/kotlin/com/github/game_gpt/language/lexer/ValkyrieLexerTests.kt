@@ -3,53 +3,51 @@ package com.github.game_gpt.language.lexer
 import com.github.game_gpt.ide.config.ValkyrieLanguageConfig
 import com.intellij.lexer.Lexer
 
-class ValkyrieLexerTests : GnosticLexerTestCase() {
+class ValkyrieLexerTests : GnosticLexerTest() {
 
     override fun createLexer(): Lexer {
         return ValkyrieLexer(ValkyrieLanguageConfig())
     }
 
-    override fun getTestDataSubPath(): String {
-        return "lexer/script"
-    }
+    override val dirPath: String = "src/test/testData/lexer/script"
 
     fun testKeywords() {
-        doLexerTest("class fn let if else loop while return true false null trait enum")
+        doTest("class fn let if else loop while return true false null trait enum")
     }
 
     fun testStringLiteral() {
-        doLexerTest("\"hello\"")
+        doTest("\"hello\"")
     }
 
     fun testNumberLiteral() {
-        doLexerTest("123 3.14")
+        doTest("123 3.14")
     }
 
     fun testIdentifier() {
-        doLexerTest("Player")
+        doTest("Player")
     }
 
     fun testOperators() {
-        doLexerTest("+ - * / % = ==")
+        doTest("+ - * / % = ==")
     }
 
     fun testArrow() {
-        doLexerTest("-> =>")
+        doTest("-> =>")
     }
 
     fun testDoubleColon() {
-        doLexerTest("::")
+        doTest("::")
     }
 
     fun testParentheses() {
-        doLexerTest("() {} []")
+        doTest("() {} []")
     }
 
     fun testPunctuation() {
-        doLexerTest("; , . :")
+        doTest("; , . :")
     }
 
     fun testComment() {
-        doLexerTest("# comment")
+        doTest("# comment")
     }
 }

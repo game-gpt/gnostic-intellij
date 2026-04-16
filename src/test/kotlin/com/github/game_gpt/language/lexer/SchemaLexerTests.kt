@@ -2,14 +2,17 @@ package com.github.game_gpt.language.lexer
 
 import com.github.game_gpt.ide.config.ValkyrieLanguageConfig
 import com.intellij.lexer.Lexer
+import com.intellij.testFramework.LexerTestCase
 
-class SchemaLexerTests : GnosticLexerTest() {
+class SchemaLexerTests : LexerTestCase() {
 
     override fun createLexer(): Lexer {
         return ValkyrieLexer(ValkyrieLanguageConfig(supportSchemaExtension = true))
     }
 
-    override val dirPath: String = "src/test/testData/lexer/schema"
+    override fun getDirPath(): String {
+        return "src/test/testData/lexer/schema"
+    }
 
     fun testSchemaKeyword() {
         doTest("schema")

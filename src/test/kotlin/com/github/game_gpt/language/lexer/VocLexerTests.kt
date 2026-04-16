@@ -1,58 +1,59 @@
 package com.github.game_gpt.language.lexer
 
 import com.intellij.lexer.Lexer
+import com.intellij.testFramework.LexerTestCase
 
-class VocLexerTests : GnosticLexerTestCase() {
+class VocLexerTests : LexerTestCase() {
 
     override fun createLexer(): Lexer {
         return VocLexer()
     }
 
-    override fun getTestDataSubPath(): String {
-        return "lexer/widget"
+    override fun getDirPath(): String {
+        return "src/test/testData/lexer/widget"
     }
 
     fun testTemplateTag() {
-        doLexerTest("<template>")
+        doTest("<template>")
     }
 
     fun testScriptTag() {
-        doLexerTest("<script>")
+        doTest("<script>")
     }
 
     fun testStyleTag() {
-        doLexerTest("<style>")
+        doTest("<style>")
     }
 
     fun testClosingTags() {
-        doLexerTest("</template> </script> </style>")
+        doTest("</template> </script> </style>")
     }
 
     fun testTagOpenAndClose() {
-        doLexerTest("<Layout>")
+        doTest("<Layout>")
     }
 
     fun testSelfClosingTag() {
-        doLexerTest("<MenuBar />")
+        doTest("<MenuBar />")
     }
 
     fun testPropertyAttribute() {
-        doLexerTest("orientation=\"vertical\"")
+        doTest("orientation=\"vertical\"")
     }
 
     fun testEventBinding() {
-        doLexerTest("onClick={handleClick}")
+        doTest("onClick={handleClick}")
     }
 
     fun testSlotContent() {
-        doLexerTest("{children}")
+        doTest("{children}")
     }
 
     fun testStyleValue() {
-        doLexerTest("style=\"flex-1\"")
+        doTest("style=\"flex-1\"")
     }
 
     fun testComment() {
-        doLexerTest("<!-- comment -->")
+        doTest("<!-- comment -->")
     }
 }
