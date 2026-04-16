@@ -190,8 +190,8 @@ abstract class GnosticLexerTest : UsefulTestCase() {
                     Companion.printSingleToken(
                         text,
                         tokenType!!,
-                        lexer.getTokenStart(),
-                        lexer.getTokenEnd()
+                        lexer.tokenStart,
+                        lexer.tokenEnd
                     )
                 )
                 lexer.advance()
@@ -200,17 +200,17 @@ abstract class GnosticLexerTest : UsefulTestCase() {
         }
 
         fun printTokens(iterator: HighlighterIterator): String {
-            val text: CharSequence = iterator.getDocument().getCharsSequence()
+            val text: CharSequence = iterator.document.charsSequence
             val result = StringBuilder()
             var tokenType: IElementType
             while (!iterator.atEnd()) {
-                tokenType = iterator.getTokenType()
+                tokenType = iterator.tokenType
                 result.append(
                     Companion.printSingleToken(
                         text,
                         tokenType,
-                        iterator.getStart(),
-                        iterator.getEnd()
+                        iterator.start,
+                        iterator.end
                     )
                 )
                 iterator.advance()
@@ -219,7 +219,7 @@ abstract class GnosticLexerTest : UsefulTestCase() {
         }
 
         fun printSingleToken(fileText: CharSequence, tokenType: IElementType, start: Int, end: Int): String {
-            return tokenType.toString() + " ('" + Companion.getTokenText(
+            return "$tokenType ('" + getTokenText(
                 tokenType,
                 fileText,
                 start,
@@ -229,7 +229,7 @@ abstract class GnosticLexerTest : UsefulTestCase() {
 
         private fun getTokenText(tokenType: IElementType, sequence: CharSequence, start: Int, end: Int): String {
             return if (tokenType is TokenWrapper)
-                (tokenType as TokenWrapper).getText()
+                tokenType.text
             else
                 StringUtil.replace(sequence.subSequence(start, end).toString(), "\n", "\\n")
         }
