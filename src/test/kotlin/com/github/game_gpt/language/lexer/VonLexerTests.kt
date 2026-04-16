@@ -9,6 +9,7 @@ import java.io.File
 
 class VonLexerTests : GnosticLexerTest() {
 
+    override val forceRefresh: Boolean = true
 
     override fun createLexer(): Lexer {
         return VonLexer()
@@ -58,11 +59,8 @@ class VonLexerTests : GnosticLexerTest() {
 
 
 abstract class GnosticLexerTest : UsefulTestCase() {
-    protected val expectedFileExtension: String
-        get() = ".txt"
-
-    protected var forceRefresh: Boolean = false
-
+    protected open val forceRefresh: Boolean = false
+    protected open val expectedFileExtension: String = ".txt"
     protected abstract fun createLexer(): Lexer
 
     protected fun doFileTest(path: String, lexer: Lexer = createLexer()) {
