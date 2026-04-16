@@ -22,7 +22,7 @@ class VonLexerTests : GnosticLexerTest() {
         return VonLexer()
     }
 
-    override val dirPath: String = "src/test/testData/lexer/von"
+    override val dirPath: String = "src/test/testData"
 
     fun testComment() {
         doFileTest("lexer/von/comment.von")
