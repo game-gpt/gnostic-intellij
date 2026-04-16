@@ -1,0 +1,2 @@
+LITERAL_STRING ('"hello von!"')
+WHITE_SPACE ('\n')

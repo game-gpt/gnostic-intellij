@@ -15,15 +15,14 @@ import java.util.*
 import java.util.stream.Collectors
 
 class VonLexerTests : GnosticLexerTest() {
-
-    override fun createLexer(): Lexer {
-        return VonLexer()
-    }
-
     override val dirPath: String = "src/test/testData/lexer/von"
 
     override val sourceFileExtension: String
         get() = ".von"
+
+    override fun createLexer(): Lexer {
+        return VonLexer()
+    }
 
     fun testComment() {
         doFileTest()

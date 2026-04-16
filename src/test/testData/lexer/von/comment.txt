@@ -1,0 +1,2 @@
+COMMENT ('# comment')
+WHITE_SPACE ('\n')
