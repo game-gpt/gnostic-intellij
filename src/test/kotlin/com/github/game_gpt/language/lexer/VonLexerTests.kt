@@ -72,7 +72,9 @@ abstract class GnosticLexerTest : UsefulTestCase() {
     protected abstract fun createLexer(): Lexer
 
     protected fun doFileTest(path: String, lexer: Lexer = createLexer()) {
-        val sourceFilePath = path
+        val testBasePath = "src/test/testData"
+        val testDirectory = testDirectoryName
+        val sourceFilePath = "$testBasePath/$testDirectory/$path"
         val source = FileUtil.loadFile(File(sourceFilePath))
         val expectedFilePath = sourceFilePath + expectedFileExtension
         val expectedFile = File(expectedFilePath)
