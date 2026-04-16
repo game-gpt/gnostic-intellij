@@ -89,7 +89,7 @@ abstract class GnosticLexerTest : UsefulTestCase() {
     }
 
     protected fun printTokens(lexer: Lexer, text: CharSequence, start: Int): String {
-        return GnosticLexerTest.Companion.printTokens(text, start, lexer)
+        return printTokens(text, start, lexer)
     }
 
     protected fun getPathToTestDataFile(extension: String): String {
@@ -116,13 +116,13 @@ abstract class GnosticLexerTest : UsefulTestCase() {
     }
 
     protected fun printTokens(text: String, start: Int): String {
-        return GnosticLexerTest.Companion.printTokens(text, start, createLexer())
+        return Companion.printTokens(text, start, createLexer())
     }
 
     protected fun checkCorrectRestart(text: String) {
         val mainLexer: Lexer = createLexer()
         val allTokens: MutableList<Trinity<IElementType?, Int?, Int?>?> =
-            GnosticLexerTest.Companion.tokenize(text, 0, 0, mainLexer)
+            Companion.tokenize(text, 0, 0, mainLexer)
         val auxLexer: Lexer = createLexer()
         auxLexer.start(text)
         var index = 0
@@ -137,7 +137,7 @@ abstract class GnosticLexerTest : UsefulTestCase() {
                 val expectedTokens: MutableList<Trinity<IElementType?, Int?, Int?>?> =
                     allTokens.subList(index, allTokens.size)
                 val restartedTokens: MutableList<Trinity<IElementType?, Int?, Int?>?> =
-                    GnosticLexerTest.Companion.tokenize(text, tokenStart, state, mainLexer)
+                    Companion.tokenize(text, tokenStart, state, mainLexer)
                 TestCase.assertEquals(
                     "Restarting impossible from offset " + tokenStart + " - " + auxLexer.getTokenText() + "\n" +
                             "All tokens <type, offset, lexer state>: " + allTokens + "\n",
@@ -171,11 +171,11 @@ abstract class GnosticLexerTest : UsefulTestCase() {
             try {
                 lexer.start(text, start, text.length, state)
             } catch (t: Throwable) {
-                LOG.error("Restarting impossible from offset " + start, t)
+                LOG.error("Restarting impossible from offset $start", t)
                 throw RuntimeException(t)
             }
-            while (lexer.getTokenType() != null) {
-                allTokens.add(Trinity.create(lexer.getTokenType(), lexer.getTokenStart(), lexer.getState()))
+            while (lexer.tokenType != null) {
+                allTokens.add(Trinity.create(lexer.tokenType, lexer.tokenStart, lexer.state))
                 lexer.advance()
             }
             return allTokens
@@ -187,7 +187,7 @@ abstract class GnosticLexerTest : UsefulTestCase() {
             var tokenType: IElementType?
             while ((lexer.getTokenType().also { tokenType = it }) != null) {
                 result.append(
-                    GnosticLexerTest.Companion.printSingleToken(
+                    Companion.printSingleToken(
                         text,
                         tokenType!!,
                         lexer.getTokenStart(),
@@ -206,7 +206,7 @@ abstract class GnosticLexerTest : UsefulTestCase() {
             while (!iterator.atEnd()) {
                 tokenType = iterator.getTokenType()
                 result.append(
-                    GnosticLexerTest.Companion.printSingleToken(
+                    Companion.printSingleToken(
                         text,
                         tokenType,
                         iterator.getStart(),
@@ -219,7 +219,7 @@ abstract class GnosticLexerTest : UsefulTestCase() {
         }
 
         fun printSingleToken(fileText: CharSequence, tokenType: IElementType, start: Int, end: Int): String {
-            return tokenType.toString() + " ('" + GnosticLexerTest.Companion.getTokenText(
+            return tokenType.toString() + " ('" + Companion.getTokenText(
                 tokenType,
                 fileText,
                 start,
