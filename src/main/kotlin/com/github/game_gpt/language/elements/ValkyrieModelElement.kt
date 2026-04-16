@@ -20,7 +20,7 @@ class ValkyrieModelElement(node: ASTNode) : ValkyrieElement(node), PsiNameIdenti
     }
 
     /**
-     * 获取名称标识符节点
+     * 获取名称标识符 PSI 元素
      */
     override fun getNameIdentifier(): PsiElement? {
         return node.findChildByType(ValkyrieTypes.IDENTIFIER)?.psi
@@ -29,9 +29,9 @@ class ValkyrieModelElement(node: ASTNode) : ValkyrieElement(node), PsiNameIdenti
     /**
      * 重命名 Model
      */
-    override fun setName(name: String): com.intellij.psi.PsiElement {
+    override fun setName(name: String): PsiElement {
         val identifier = nameIdentifier ?: return this
-        val newIdentifier = com.github.game_gpt.language.elements.GnosticElementFactory.createIdentifier(name, project)
+        val newIdentifier = GnosticElementFactory.createIdentifier(name, project)
             ?: return this
         identifier.replace(newIdentifier)
         return this

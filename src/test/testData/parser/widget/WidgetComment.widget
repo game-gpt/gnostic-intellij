@@ -1,0 +1,27 @@
+<template>
+    <!-- This is an HTML comment -->
+    <div>
+        <h1>Hello, World!</h1>
+        <!-- Another comment here -->
+        <p>This is a test</p>
+    </div>
+</template>
+
+<script>
+    // This is a single-line comment
+    
+    /*
+    This is a
+    multi-line comment
+    */
+    
+    let count: Int = 0;
+</script>
+
+<style>
+    /* CSS comment */
+    .container {
+        /* Another CSS comment */
+        width: 100%;
+    }
+</style>

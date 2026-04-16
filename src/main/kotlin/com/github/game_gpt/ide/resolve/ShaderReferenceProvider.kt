@@ -14,6 +14,9 @@ import com.intellij.util.ProcessingContext
  */
 class ShaderReferenceProvider : PsiReferenceProvider() {
 
+    /**
+     * 为 fallback 块中 shader 字段值的标识符创建引用
+     */
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
         if (!isFallbackShaderReference(element)) {
             return emptyArray()

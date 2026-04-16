@@ -5,14 +5,14 @@ import com.intellij.lang.ASTNode
 
 /**
  * Using 声明 PSI 元素
- * 表示 `using game_backend.Player;` 或 `using game_backend.*;` 形式的导入声明
+ * 表示 gs 语言中的 using 声明，如 `using gg_shader::f32::{vec2, vec3};`
  */
 class ValkyrieUsingElement(node: ASTNode) : ValkyrieElement(node) {
 
     /**
-     * 获取完整的导入路径
-     * 对于 `using game_backend.Player;` 返回 `"game_backend.Player"`
-     * 对于 `using game_backend.*;` 返回 `"game_backend.*"`
+     * 获取完整的导入路径（使用双冒号分隔符，符合 shader 语言规范）
+     * 对于 `using gg_shader::f32::vec2`，返回 "gg_shader::f32::vec2"
+     * 对于 `using my_shaders::common::*`，返回 "my_shaders::common::*"
      */
     fun getImportPath(): String? {
         val parts = mutableListOf<String>()
@@ -25,29 +25,29 @@ class ValkyrieUsingElement(node: ASTNode) : ValkyrieElement(node) {
             }
             child = child.treeNext
         }
-        return parts.takeIf { it.isNotEmpty() }?.joinToString(".")
+        return parts.takeIf { it.isNotEmpty() }?.joinToString("::")
     }
 
     /**
      * 获取导入的命名空间部分
-     * 对于 `using game_backend.Player;` 返回 `"game_backend"`
-     * 对于 `using game_backend.*;` 返回 `"game_backend"`
+     * 对于 `using gg_shader::f32::vec2`，返回 "gg_shader::f32"
+     * 对于 `using my_shaders::common::*`，返回 "my_shaders::common"
      */
     fun getImportNamespace(): String? {
         val path = getImportPath() ?: return null
-        val lastDot = path.lastIndexOf('.')
-        return if (lastDot > 0) path.substring(0, lastDot) else ""
+        val lastSep = path.lastIndexOf("::")
+        return if (lastSep > 0) path.substring(0, lastSep) else ""
     }
 
     /**
      * 获取导入的符号名称
-     * 对于 `using game_backend.Player;` 返回 `"Player"`
-     * 对于 `using game_backend.*;` 返回 `"*"`（表示通配符导入）
+     * 对于 `using gg_shader::f32::vec2`，返回 "vec2"
+     * 对于 `using my_shaders::common::*`，返回 "*"（表示通配符导入）
      */
     fun getImportedName(): String? {
         val path = getImportPath() ?: return null
-        val lastDot = path.lastIndexOf('.')
-        return if (lastDot >= 0) path.substring(lastDot + 1) else path
+        val lastSep = path.lastIndexOf("::")
+        return if (lastSep >= 0) path.substring(lastSep + 2) else path
     }
 
     /**

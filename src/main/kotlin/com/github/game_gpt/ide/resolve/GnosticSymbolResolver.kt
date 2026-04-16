@@ -4,12 +4,12 @@ import com.github.game_gpt.ide.index.GnosticSymbolIndex
 import com.github.game_gpt.ide.index.GnosticSymbolInfo
 import com.github.game_gpt.ide.index.GnosticSymbolKey
 import com.github.game_gpt.ide.index.GnosticSymbolType
+import com.github.game_gpt.language.elements.ValkyrieNamespaceElement
 import com.github.game_gpt.language.elements.ValkyrieUsingElement
 import com.github.game_gpt.language.types.ValkyrieTypes
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.FileBasedIndex
 
@@ -24,9 +24,6 @@ import com.intellij.util.indexing.FileBasedIndex
  * 4. 全局搜索
  */
 class GnosticSymbolResolver(private val project: Project) {
-
-    private val index: FileBasedIndex<GnosticSymbolKey, GnosticSymbolInfo>
-        get() = FileBasedIndex.getInstance()
 
     /**
      * 根据名称和引用上下文解析符号
@@ -45,33 +42,30 @@ class GnosticSymbolResolver(private val project: Project) {
             return resolveQualifiedName(name, qualifierNamespace)
         }
 
-        val candidates = mutableListOf<GnosticSymbolInfo>()
-
         val sameFileSymbols = findInFile(name, currentFile)
-        candidates.addAll(sameFileSymbols)
-        if (candidates.isNotEmpty()) {
-            return candidates
+        if (sameFileSymbols.isNotEmpty()) {
+            return sameFileSymbols
         }
 
         if (currentNamespace.isNotEmpty()) {
             val namespaceSymbols = findByKey(name, currentNamespace)
-            candidates.addAll(namespaceSymbols)
-        }
-        if (candidates.isNotEmpty()) {
-            return candidates
+            if (namespaceSymbols.isNotEmpty()) {
+                return namespaceSymbols
+            }
         }
 
         for (import in usingImports) {
             if (import.isWildcard) {
                 val namespaceSymbols = findByKey(name, import.namespace)
-                candidates.addAll(namespaceSymbols)
+                if (namespaceSymbols.isNotEmpty()) {
+                    return namespaceSymbols
+                }
             } else if (import.importedName == name) {
                 val specificSymbols = findByKey(name, import.namespace)
-                candidates.addAll(specificSymbols)
+                if (specificSymbols.isNotEmpty()) {
+                    return specificSymbols
+                }
             }
-        }
-        if (candidates.isNotEmpty()) {
-            return candidates
         }
 
         return findByNameOnly(name)
@@ -89,20 +83,10 @@ class GnosticSymbolResolver(private val project: Project) {
      * 从 PSI 文件中提取命名空间声明
      */
     private fun extractNamespace(file: PsiFile): String {
-        var node = file.node.firstChildNode
-        while (node != null) {
-            if (node.elementType == ValkyrieTypes.NAMESPACE_DECLARATION) {
-                val parts = mutableListOf<String>()
-                var child = node.firstChildNode
-                while (child != null) {
-                    if (child.elementType == ValkyrieTypes.IDENTIFIER) {
-                        parts.add(child.text)
-                    }
-                    child = child.treeNext
-                }
-                return parts.joinToString(".")
+        for (child in file.children) {
+            if (child is ValkyrieNamespaceElement) {
+                return child.getNamespacePath() ?: ""
             }
-            node = node.treeNext
         }
         return ""
     }
@@ -112,23 +96,20 @@ class GnosticSymbolResolver(private val project: Project) {
      */
     private fun collectUsingImports(file: PsiFile): List<UsingImport> {
         val imports = mutableListOf<UsingImport>()
-        var node = file.node.firstChildNode
-        while (node != null) {
-            if (node.elementType == ValkyrieTypes.USING_DECLARATION) {
-                val psi = node.psi
-                if (psi is ValkyrieUsingElement) {
-                    val path = psi.getImportPath()
-                    if (path != null) {
-                        val lastDot = path.lastIndexOf('.')
-                        if (lastDot > 0) {
-                            val ns = path.substring(0, lastDot)
-                            val importedName = path.substring(lastDot + 1)
-                            imports.add(UsingImport(ns, importedName, importedName == "*"))
-                        }
+        for (child in file.children) {
+            if (child is ValkyrieUsingElement) {
+                val path = child.getImportPath()
+                if (path != null) {
+                    val lastSep = path.lastIndexOf("::")
+                    if (lastSep > 0) {
+                        val ns = path.substring(0, lastSep)
+                        val importedName = path.substring(lastSep + 2)
+                        imports.add(UsingImport(ns, importedName, importedName == "*"))
+                    } else {
+                        imports.add(UsingImport(path, path, false))
                     }
                 }
             }
-            node = node.treeNext
         }
         return imports
     }
@@ -159,7 +140,7 @@ class GnosticSymbolResolver(private val project: Project) {
      */
     private fun findByKey(name: String, namespace: String): List<GnosticSymbolInfo> {
         val key = GnosticSymbolKey(name, namespace)
-        val values = index.getValues(GnosticSymbolIndex.NAME, key, GlobalSearchScope.allScope(project))
+        val values = FileBasedIndex.getInstance().getValues(GnosticSymbolIndex.NAME, key, GlobalSearchScope.allScope(project))
         return values.toList()
     }
 
@@ -168,13 +149,17 @@ class GnosticSymbolResolver(private val project: Project) {
      */
     private fun findByNameOnly(name: String): List<GnosticSymbolInfo> {
         val results = mutableListOf<GnosticSymbolInfo>()
-        index.processAllKeys(GnosticSymbolIndex.NAME, project) { key ->
-            if (key.name == name) {
-                val values = index.getValues(GnosticSymbolIndex.NAME, key, GlobalSearchScope.allScope(project))
-                results.addAll(values)
-            }
-            true
-        }
+        FileBasedIndex.getInstance().processAllKeys(
+            GnosticSymbolIndex.NAME,
+            { key: GnosticSymbolKey ->
+                if (key.name == name) {
+                    val values = FileBasedIndex.getInstance().getValues(GnosticSymbolIndex.NAME, key, GlobalSearchScope.allScope(project))
+                    results.addAll(values)
+                }
+                true
+            },
+            project
+        )
         return results
     }
 
@@ -183,12 +168,16 @@ class GnosticSymbolResolver(private val project: Project) {
      */
     fun getAllNamespaces(): Set<String> {
         val namespaces = mutableSetOf<String>()
-        index.processAllKeys(GnosticSymbolIndex.NAME, project) { key ->
-            if (key.namespace.isNotEmpty()) {
-                namespaces.add(key.namespace)
-            }
-            true
-        }
+        FileBasedIndex.getInstance().processAllKeys(
+            GnosticSymbolIndex.NAME,
+            { key: GnosticSymbolKey ->
+                if (key.namespace.isNotEmpty()) {
+                    namespaces.add(key.namespace)
+                }
+                true
+            },
+            project
+        )
         return namespaces
     }
 
@@ -197,13 +186,17 @@ class GnosticSymbolResolver(private val project: Project) {
      */
     fun getSymbolsInNamespace(namespace: String): List<GnosticSymbolInfo> {
         val results = mutableListOf<GnosticSymbolInfo>()
-        index.processAllKeys(GnosticSymbolIndex.NAME, project) { key ->
-            if (key.namespace == namespace) {
-                val values = index.getValues(GnosticSymbolIndex.NAME, key, GlobalSearchScope.allScope(project))
-                results.addAll(values)
-            }
-            true
-        }
+        FileBasedIndex.getInstance().processAllKeys(
+            GnosticSymbolIndex.NAME,
+            { key: GnosticSymbolKey ->
+                if (key.namespace == namespace) {
+                    val values = FileBasedIndex.getInstance().getValues(GnosticSymbolIndex.NAME, key, GlobalSearchScope.allScope(project))
+                    results.addAll(values)
+                }
+                true
+            },
+            project
+        )
         return results
     }
 
@@ -220,8 +213,8 @@ class GnosticSymbolResolver(private val project: Project) {
         while (node != null) {
             val type = mapNodeTypeToSymbolType(node.elementType)
             if (type != null) {
-                val name = findFirstIdentifier(node) ?: continue
-                results.add(GnosticSymbolInfo(name, currentNamespace, type, currentFile.virtualFile?.url ?: "", node.startOffset, node.textLength))
+                val symbolName = findFirstIdentifier(node) ?: continue
+                results.add(GnosticSymbolInfo(symbolName, currentNamespace, type, currentFile.virtualFile?.url ?: "", node.startOffset, node.textLength))
             }
             node = node.treeNext
         }

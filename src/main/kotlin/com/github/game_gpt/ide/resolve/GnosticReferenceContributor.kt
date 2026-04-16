@@ -13,6 +13,11 @@ import com.intellij.psi.PsiReferenceRegistrar
  */
 class GnosticReferenceContributor : PsiReferenceContributor() {
 
+    /**
+     * 注册引用提供者
+     * 为 fallback 块中的标识符注册 ShaderReferenceProvider
+     * 为 using 声明元素注册 UsingReferenceProvider
+     */
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         registrar.registerReferenceProvider(
             psiElement(ValkyrieTypes.IDENTIFIER)

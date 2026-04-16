@@ -1,5 +1,5 @@
 IDENTIFIER ('onClick')
-EQUAL ('=')
-LBRACE ('{')
+= ('=')
+{ ('{')
 IDENTIFIER ('handleClick')
-RBRACE ('}')
+} ('}')

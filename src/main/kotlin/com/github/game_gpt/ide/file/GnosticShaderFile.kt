@@ -13,6 +13,9 @@ import com.intellij.psi.FileViewProvider
  */
 class GnosticShaderFile(view: FileViewProvider) : GnosticFile(view, GnosticShaderLanguage) {
 
+    /**
+     * 获取文件类型
+     */
     override fun getFileType(): FileType {
         return GnosticShaderFileType
     }
@@ -25,7 +28,7 @@ class GnosticShaderFile(view: FileViewProvider) : GnosticFile(view, GnosticShade
     fun getNamespace(): String? {
         for (child in children) {
             if (child is ValkyrieNamespaceElement) {
-                return child.getName()
+                return child.getNamespacePath()
             }
         }
         return null

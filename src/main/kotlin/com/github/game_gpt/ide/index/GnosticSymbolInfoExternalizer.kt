@@ -10,6 +10,9 @@ import java.io.DataOutput
  */
 class GnosticSymbolInfoExternalizer : DataExternalizer<GnosticSymbolInfo> {
 
+    /**
+     * 将 GnosticSymbolInfo 序列化到输出流
+     */
     override fun save(output: DataOutput, value: GnosticSymbolInfo) {
         output.writeUTF(value.name)
         output.writeUTF(value.namespace)
@@ -19,6 +22,9 @@ class GnosticSymbolInfoExternalizer : DataExternalizer<GnosticSymbolInfo> {
         output.writeInt(value.length)
     }
 
+    /**
+     * 从输入流反序列化 GnosticSymbolInfo
+     */
     override fun read(input: DataInput): GnosticSymbolInfo {
         val name = input.readUTF()
         val namespace = input.readUTF()

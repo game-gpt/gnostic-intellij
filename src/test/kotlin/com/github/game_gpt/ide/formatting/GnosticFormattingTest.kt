@@ -1,8 +1,9 @@
 package com.github.game_gpt.ide.formatting
 
-import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import org.junit.Assert
 
-class GnosticFormattingTest : LightJavaCodeInsightFixtureTestCase() {
+class GnosticFormattingTest : BasePlatformTestCase() {
     override fun getTestDataPath(): String {
         return "src/test/testData/formatting"
     }
@@ -10,7 +11,9 @@ class GnosticFormattingTest : LightJavaCodeInsightFixtureTestCase() {
     fun testVonFormattingDoesNotThrow() {
         val input = "{name: \"test\", count: 42}"
         myFixture.configureByText("test.von", input)
-        myFixture.performAction("ReformatCode")
+        com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction(project) {
+            com.intellij.codeInsight.actions.ReformatCodeProcessor(project, myFixture.file, null, false).run()
+        }
         val result = myFixture.editor.document.text
         Assert.assertNotNull("Formatting should produce non-null result", result)
     }

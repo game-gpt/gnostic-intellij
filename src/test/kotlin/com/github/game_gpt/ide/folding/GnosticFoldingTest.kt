@@ -1,8 +1,8 @@
 package com.github.game_gpt.ide.folding
 
-import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
-class GnosticFoldingTest : LightJavaCodeInsightFixtureTestCase() {
+class GnosticFoldingTest : BasePlatformTestCase() {
     override fun getTestDataPath(): String {
         return "src/test/testData/folding"
     }

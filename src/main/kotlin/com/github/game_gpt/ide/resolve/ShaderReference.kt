@@ -1,12 +1,12 @@
 package com.github.game_gpt.ide.resolve
 
 import com.github.game_gpt.ide.file.GnosticShaderFile
-import com.github.game_gpt.ide.index.GnosticNamespaceIndex
 import com.github.game_gpt.ide.index.GnosticSymbolIndex
 import com.github.game_gpt.ide.index.GnosticSymbolInfo
 import com.github.game_gpt.ide.index.GnosticSymbolKey
 import com.github.game_gpt.ide.index.GnosticSymbolType
 import com.github.game_gpt.language.elements.ValkyrieShaderElement
+import com.github.game_gpt.language.types.ValkyrieTypes
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFileManager
@@ -20,16 +20,29 @@ import com.intellij.util.indexing.FileBasedIndex
  * Shader 引用实现
  * 用于解析 fallback 块中的 shader 名称引用，支持同文件和跨文件解析
  * 例如 `fallback { shader: PhongShader }` 中的 PhongShader 引用
+ *
+ * @param element 引用所在的 PSI 元素
+ * @param range 引用在元素内的文本范围
  */
 class ShaderReference(
     private val element: PsiElement,
     private val range: TextRange
 ) : PsiReference {
 
+    /**
+     * 获取引用所在的 PSI 元素
+     */
     override fun getElement(): PsiElement = element
 
+    /**
+     * 获取引用在元素内的文本范围
+     */
     override fun getRangeInElement(): TextRange = range
 
+    /**
+     * 解析引用目标
+     * 优先在同文件内查找，再通过符号索引跨文件查找
+     */
     override fun resolve(): PsiElement? {
         val shaderName = element.text ?: return null
         val project = element.project
@@ -68,11 +81,11 @@ class ShaderReference(
         val currentNamespace = containingFile?.getNamespace() ?: ""
         val usingPaths = containingFile?.getUsingPaths() ?: emptyList()
 
-        val prioritizedInfo = findInNamespace(index, shaderName, currentNamespace, scope, project)
+        val prioritizedInfo = findInNamespace(index, shaderName, currentNamespace, scope)
             ?: usingPaths.firstNotNullOfOrNull { ns ->
-                findInNamespace(index, shaderName, ns, scope, project)
+                findInNamespace(index, shaderName, ns, scope)
             }
-            ?: findInNamespace(index, shaderName, "", scope, project)
+            ?: findInNamespace(index, shaderName, "", scope)
             ?: findGlobal(index, shaderName, scope, project)
 
         return prioritizedInfo?.let { navigateToElement(project, it) }
@@ -82,38 +95,39 @@ class ShaderReference(
      * 在指定命名空间中查找 shader
      */
     private fun findInNamespace(
-        index: FileBasedIndex<GnosticSymbolKey, GnosticSymbolInfo>,
+        index: FileBasedIndex,
         name: String,
         namespace: String,
-        scope: GlobalSearchScope,
-        project: Project
+        scope: GlobalSearchScope
     ): GnosticSymbolInfo? {
         val key = GnosticSymbolKey(name, namespace)
         val values = index.getValues(GnosticSymbolIndex.NAME, key, scope)
-        return values.firstOrNull { it.type == GnosticSymbolType.SHADER }
+        @Suppress("UNCHECKED_CAST")
+        return (values as? Collection<GnosticSymbolInfo>)?.firstOrNull { it.type == GnosticSymbolType.SHADER }
     }
 
     /**
      * 全局搜索 shader（遍历所有命名空间）
      */
     private fun findGlobal(
-        index: FileBasedIndex<GnosticSymbolKey, GnosticSymbolInfo>,
+        index: FileBasedIndex,
         name: String,
         scope: GlobalSearchScope,
         project: Project
     ): GnosticSymbolInfo? {
         var result: GnosticSymbolInfo? = null
-        index.processAllKeys(GnosticSymbolIndex.NAME, project) { key ->
+        index.processAllKeys(GnosticSymbolIndex.NAME, { key: GnosticSymbolKey ->
             if (key.name == name) {
                 val values = index.getValues(GnosticSymbolIndex.NAME, key, scope)
-                val shader = values.firstOrNull { it.type == GnosticSymbolType.SHADER }
+                @Suppress("UNCHECKED_CAST")
+                val shader = (values as? Collection<GnosticSymbolInfo>)?.firstOrNull { it.type == GnosticSymbolType.SHADER }
                 if (shader != null) {
                     result = shader
                     return@processAllKeys false
                 }
             }
             true
-        }
+        }, scope, null)
         return result
     }
 
@@ -133,7 +147,7 @@ class ShaderReference(
             if (current is ValkyrieShaderElement && current.getShaderName() == info.name) {
                 return current
             }
-            if (current.node?.elementType == com.github.game_gpt.language.types.ValkyrieTypes.SHADER_DECLARATION) {
+            if (current.node?.elementType == ValkyrieTypes.SHADER_DECLARATION) {
                 return current
             }
             current = current.parent
@@ -142,16 +156,31 @@ class ShaderReference(
         return null
     }
 
+    /**
+     * 获取引用的规范文本
+     */
     override fun getCanonicalText(): String = element.text
 
+    /**
+     * 处理元素重命名
+     */
     override fun handleElementRename(newElementName: String): PsiElement = element
 
+    /**
+     * 绑定引用到新元素
+     */
     override fun bindToElement(newElement: PsiElement): PsiElement = element
 
+    /**
+     * 判断引用是否指向目标元素
+     */
     override fun isReferenceTo(target: PsiElement): Boolean {
         val resolved = resolve()
         return resolved != null && resolved == target
     }
 
+    /**
+     * 判断是否为软引用（未解析时不报错）
+     */
     override fun isSoft(): Boolean = true
 }

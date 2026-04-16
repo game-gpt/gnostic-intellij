@@ -1,6 +1,5 @@
 package com.github.game_gpt.ide.index
 
-import com.github.game_gpt.ide.file_type.GnosticShaderFileType
 import com.github.game_gpt.language.elements.ValkyrieNamespaceElement
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.indexing.DataIndexer
@@ -12,7 +11,7 @@ import com.intellij.util.io.KeyDescriptor
 
 /**
  * Gnostic 命名空间索引
- * 索引项目中所有 .shader 文件内的命名空间声明，
+ * 索引项目中所有 .schema、.script 和 .shader 文件内的命名空间声明，
  * 支持通过命名空间路径进行跨文件查找，使 using 声明可以解析到对应的 namespace
  */
 class GnosticNamespaceIndex : FileBasedIndexExtension<String, GnosticSymbolInfo>() {
@@ -24,7 +23,7 @@ class GnosticNamespaceIndex : FileBasedIndexExtension<String, GnosticSymbolInfo>
     }
 
     /** 索引版本号 */
-    override fun getVersion(): Int = 1
+    override fun getVersion(): Int = 2
 
     /** 依赖文件内容 */
     override fun dependsOnFileContent(): Boolean = true
@@ -38,10 +37,10 @@ class GnosticNamespaceIndex : FileBasedIndexExtension<String, GnosticSymbolInfo>
     /** 获取值外部化器 */
     override fun getValueExternalizer(): GnosticSymbolInfoExternalizer = GnosticSymbolInfoExternalizer()
 
-    /** 获取输入过滤器，仅索引 .shader 文件 */
+    /** 获取输入过滤器，索引 .schema、.script 和 .shader 文件 */
     override fun getInputFilter(): FileBasedIndex.InputFilter {
         return FileBasedIndex.InputFilter { file: VirtualFile ->
-            file.fileType is GnosticShaderFileType
+            file.extension in setOf("schema", "script", "shader")
         }
     }
 

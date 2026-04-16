@@ -15,6 +15,9 @@ import com.intellij.util.ProcessingContext
  */
 class UsingReferenceProvider : PsiReferenceProvider() {
 
+    /**
+     * 为 using 声明元素创建引用
+     */
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
         if (element !is ValkyrieUsingElement) {
             return emptyArray()
