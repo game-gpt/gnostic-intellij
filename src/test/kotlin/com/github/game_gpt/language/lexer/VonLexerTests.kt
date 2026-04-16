@@ -16,13 +16,14 @@ import java.io.IOException
 import java.util.*
 import java.util.stream.Collectors
 
-class VonLexerTests : LexerTestCase() {
+class VonLexerTests : GnosticLexerTest() {
 
     override fun createLexer(): Lexer {
         return VonLexer()
     }
 
     fun testComment() {
+        doFileTest("comment.von")
         doTest("# comment")
     }
 
@@ -61,10 +62,17 @@ class VonLexerTests : LexerTestCase() {
 
 
 
-abstract class LexerTestCase : UsefulTestCase() {
-    protected fun doTest(text: String, expected: String? = null, lexer: Lexer = createLexer()) {
-        val result = printTokens(lexer, text, 0)
+abstract class GnosticLexerTest : UsefulTestCase() {
+    protected val expectedFileExtension: String
+        get() = ".txt"
 
+    protected fun doFileTest(path: String, lexer: Lexer = createLexer()) {
+        val source = FileUtil.loadFile(File(path))
+        val expected = getPathToTestDataFile(this.expectedFileExtension)
+        doTest(source, expected, lexer)
+    }
+    protected fun doTest(source: String, expected: String? = null, lexer: Lexer = createLexer()) {
+        val result = printTokens(lexer, source, 0)
         if (expected != null) {
             assertSameLines(expected, result)
         } else {
@@ -73,15 +81,14 @@ abstract class LexerTestCase : UsefulTestCase() {
     }
 
     protected fun printTokens(lexer: Lexer, text: CharSequence, start: Int): String {
-        return LexerTestCase.Companion.printTokens(text, start, lexer)
+        return GnosticLexerTest.Companion.printTokens(text, start, lexer)
     }
 
     protected fun getPathToTestDataFile(extension: String): String {
         return IdeaTestExecutionPolicy.getHomePathWithPolicy() + "/" + this.dirPath + "/" + getTestName(true) + extension
     }
 
-    protected val expectedFileExtension: String
-        get() = ".txt"
+
 
     protected fun checkZeroState(text: String, tokenTypes: TokenSet) {
         val lexer: Lexer = createLexer()
@@ -100,13 +107,13 @@ abstract class LexerTestCase : UsefulTestCase() {
     }
 
     protected fun printTokens(text: String, start: Int): String {
-        return LexerTestCase.Companion.printTokens(text, start, createLexer())
+        return GnosticLexerTest.Companion.printTokens(text, start, createLexer())
     }
 
     protected fun checkCorrectRestart(text: String) {
         val mainLexer: Lexer = createLexer()
         val allTokens: MutableList<Trinity<IElementType?, Int?, Int?>?> =
-            LexerTestCase.Companion.tokenize(text, 0, 0, mainLexer)
+            GnosticLexerTest.Companion.tokenize(text, 0, 0, mainLexer)
         val auxLexer: Lexer = createLexer()
         auxLexer.start(text)
         var index = 0
@@ -121,7 +128,7 @@ abstract class LexerTestCase : UsefulTestCase() {
                 val expectedTokens: MutableList<Trinity<IElementType?, Int?, Int?>?> =
                     allTokens.subList(index, allTokens.size)
                 val restartedTokens: MutableList<Trinity<IElementType?, Int?, Int?>?> =
-                    LexerTestCase.Companion.tokenize(text, tokenStart, state, mainLexer)
+                    GnosticLexerTest.Companion.tokenize(text, tokenStart, state, mainLexer)
                 TestCase.assertEquals(
                     "Restarting impossible from offset " + tokenStart + " - " + auxLexer.getTokenText() + "\n" +
                             "All tokens <type, offset, lexer state>: " + allTokens + "\n",
@@ -142,9 +149,6 @@ abstract class LexerTestCase : UsefulTestCase() {
         }
     }
 
-    protected fun doFileTest(fileExt: String) {
-        doTest(loadTestDataFile("." + fileExt))
-    }
 
     protected fun loadTestDataFile(fileExt: String): String {
         val fileName = getPathToTestDataFile(fileExt)
@@ -194,7 +198,7 @@ abstract class LexerTestCase : UsefulTestCase() {
             var tokenType: IElementType?
             while ((lexer.getTokenType().also { tokenType = it }) != null) {
                 result.append(
-                    LexerTestCase.Companion.printSingleToken(
+                    GnosticLexerTest.Companion.printSingleToken(
                         text,
                         tokenType,
                         lexer.getTokenStart(),
@@ -213,7 +217,7 @@ abstract class LexerTestCase : UsefulTestCase() {
             while (!iterator.atEnd()) {
                 tokenType = iterator.getTokenType()
                 result.append(
-                    LexerTestCase.Companion.printSingleToken(
+                    GnosticLexerTest.Companion.printSingleToken(
                         text,
                         tokenType,
                         iterator.getStart(),
@@ -226,7 +230,7 @@ abstract class LexerTestCase : UsefulTestCase() {
         }
 
         fun printSingleToken(fileText: CharSequence, tokenType: IElementType, start: Int, end: Int): String {
-            return tokenType.toString() + " ('" + LexerTestCase.Companion.getTokenText(
+            return tokenType.toString() + " ('" + GnosticLexerTest.Companion.getTokenText(
                 tokenType,
                 fileText,
                 start,
