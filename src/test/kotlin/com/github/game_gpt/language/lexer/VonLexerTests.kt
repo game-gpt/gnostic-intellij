@@ -67,19 +67,14 @@ abstract class GnosticLexerTest : UsefulTestCase() {
     protected val expectedFileExtension: String
         get() = ".txt"
 
-    protected open val sourceFileExtension: String
-        get() = ""
-
     protected var refreshExpected: Boolean = false
-
-    protected abstract val dirPath: String
 
     protected abstract fun createLexer(): Lexer
 
-    protected fun doFileTest(lexer: Lexer = createLexer()) {
-        val sourceFile = File(getPathToTestDataFile(sourceFileExtension))
-        val source = FileUtil.loadFile(sourceFile)
-        val expectedFilePath = getPathToTestDataFile(expectedFileExtension)
+    protected fun doFileTest(path: String, lexer: Lexer = createLexer()) {
+        val sourceFilePath = getTestDataPath() + "/" + path
+        val source = FileUtil.loadFile(File(sourceFilePath))
+        val expectedFilePath = sourceFilePath + expectedFileExtension
         val expectedFile = File(expectedFilePath)
         val result = printTokens(lexer, source, 0)
         if (refreshExpected || !expectedFile.exists()) {
@@ -88,12 +83,13 @@ abstract class GnosticLexerTest : UsefulTestCase() {
         assertSameLinesWithFile(expectedFilePath, result)
     }
 
-    protected fun printTokens(lexer: Lexer, text: CharSequence, start: Int): String {
-        return printTokens(text, start, lexer)
+    protected fun doTest(source: String, expected: String, lexer: Lexer = createLexer()) {
+        val result = printTokens(lexer, source, 0)
+        assertSameLines(expected, result)
     }
 
-    protected fun getPathToTestDataFile(extension: String): String {
-        return dirPath + "/" + getTestName(true) + extension
+    protected fun printTokens(lexer: Lexer, text: CharSequence, start: Int): String {
+        return printTokens(text, start, lexer)
     }
 
 
@@ -104,50 +100,44 @@ abstract class GnosticLexerTest : UsefulTestCase() {
         lexer.start(text)
 
         while (true) {
-            val type: IElementType? = lexer.getTokenType()
-            if (type == null) {
-                break
-            }
-            if (tokenTypes.contains(type) && lexer.getState() !== 0) {
-                fail("Non-zero lexer state on token \"" + lexer.getTokenText() + "\" (" + type + ") at " + lexer.getTokenStart())
+            val type: IElementType = lexer.tokenType ?: break
+            if (tokenTypes.contains(type) && lexer.state !== 0) {
+                fail("Non-zero lexer state on token \"" + lexer.tokenText + "\" (" + type + ") at " + lexer.tokenStart)
             }
             lexer.advance()
         }
     }
 
     protected fun printTokens(text: String, start: Int): String {
-        return Companion.printTokens(text, start, createLexer())
+        return printTokens(text, start, createLexer())
     }
 
     protected fun checkCorrectRestart(text: String) {
         val mainLexer: Lexer = createLexer()
         val allTokens: MutableList<Trinity<IElementType?, Int?, Int?>?> =
-            Companion.tokenize(text, 0, 0, mainLexer)
+            tokenize(text, 0, 0, mainLexer)
         val auxLexer: Lexer = createLexer()
         auxLexer.start(text)
         var index = 0
         while (true) {
-            val type: IElementType? = auxLexer.getTokenType()
-            if (type == null) {
-                break
-            }
-            val state: Int = auxLexer.getState()
+            val type: IElementType = auxLexer.tokenType ?: break
+            val state: Int = auxLexer.state
             if (state == 0 || (auxLexer is RestartableLexer && (auxLexer as RestartableLexer).isRestartableState(state))) {
-                val tokenStart: Int = auxLexer.getTokenStart()
+                val tokenStart: Int = auxLexer.tokenStart
                 val expectedTokens: MutableList<Trinity<IElementType?, Int?, Int?>?> =
                     allTokens.subList(index, allTokens.size)
                 val restartedTokens: MutableList<Trinity<IElementType?, Int?, Int?>?> =
-                    Companion.tokenize(text, tokenStart, state, mainLexer)
+                    tokenize(text, tokenStart, state, mainLexer)
                 TestCase.assertEquals(
-                    "Restarting impossible from offset " + tokenStart + " - " + auxLexer.getTokenText() + "\n" +
+                    "Restarting impossible from offset " + tokenStart + " - " + auxLexer.tokenText + "\n" +
                             "All tokens <type, offset, lexer state>: " + allTokens + "\n",
                     expectedTokens.stream()
-                        .map<String?> { o: Trinity<IElementType?, kotlin.Int?, kotlin.Int?>? -> Objects.toString(o) }
+                        .map<String?> { o: Trinity<IElementType?, Int?, Int?>? -> Objects.toString(o) }
                         .collect(
                             Collectors.joining("\n")
                         ),
                     restartedTokens.stream()
-                        .map<String?> { o: Trinity<IElementType?, kotlin.Int?, kotlin.Int?>? -> Objects.toString(o) }
+                        .map<String?> { o: Trinity<IElementType?, Int?, Int?>? -> Objects.toString(o) }
                         .collect(
                             Collectors.joining("\n")
                         )
@@ -158,6 +148,9 @@ abstract class GnosticLexerTest : UsefulTestCase() {
         }
     }
 
+    override fun getTestDirectoryName(): String {
+        return super.getTestDirectoryName()
+    }
 
     companion object {
         private fun tokenize(
