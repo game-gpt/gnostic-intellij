@@ -15,49 +15,49 @@ import java.util.*
 import java.util.stream.Collectors
 
 class VonLexerTests : GnosticLexerTest() {
-    override val dirPath: String = "src/test/testData/lexer/von"
-
-    override val sourceFileExtension: String
-        get() = ".von"
 
     override fun createLexer(): Lexer {
         return VonLexer()
     }
 
+    override fun getTestDirectoryName(): String {
+        return "lexer/von"
+    }
+
     fun testComment() {
-        doFileTest()
+        doFileTest("comment.von")
     }
 
     fun testStringLiteral() {
-        doFileTest()
+        doFileTest("stringLiteral.von")
     }
 
     fun testNumberLiteral() {
-        doFileTest()
+        doFileTest("numberLiteral.von")
     }
 
     fun testIdentifier() {
-        doFileTest()
+        doFileTest("identifier.von")
     }
 
     fun testKeywords() {
-        doFileTest()
+        doFileTest("keywords.von")
     }
 
     fun testBraces() {
-        doFileTest()
+        doFileTest("braces.von")
     }
 
     fun testColonAndComma() {
-        doFileTest()
+        doFileTest("colonAndComma.von")
     }
 
     fun testKeywordsAsKeys() {
-        doFileTest()
+        doFileTest("keywordsAsKeys.von")
     }
 
     fun testMixedObject() {
-        doFileTest()
+        doFileTest("mixedObject.von")
     }
 }
 
@@ -72,7 +72,7 @@ abstract class GnosticLexerTest : UsefulTestCase() {
     protected abstract fun createLexer(): Lexer
 
     protected fun doFileTest(path: String, lexer: Lexer = createLexer()) {
-        val sourceFilePath = getTestDataPath() + "/" + path
+        val sourceFilePath = path
         val source = FileUtil.loadFile(File(sourceFilePath))
         val expectedFilePath = sourceFilePath + expectedFileExtension
         val expectedFile = File(expectedFilePath)
@@ -146,10 +146,6 @@ abstract class GnosticLexerTest : UsefulTestCase() {
             index++
             auxLexer.advance()
         }
-    }
-
-    override fun getTestDirectoryName(): String {
-        return super.getTestDirectoryName()
     }
 
     companion object {

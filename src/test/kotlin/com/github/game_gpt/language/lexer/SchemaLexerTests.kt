@@ -2,59 +2,54 @@ package com.github.game_gpt.language.lexer
 
 import com.github.game_gpt.ide.config.ValkyrieLanguageConfig
 import com.intellij.lexer.Lexer
-import com.intellij.testFramework.LexerTestCase
 
-class SchemaLexerTests : LexerTestCase() {
+class SchemaLexerTests : GnosticLexerTest() {
 
     override fun createLexer(): Lexer {
         return ValkyrieLexer(ValkyrieLanguageConfig(supportSchemaExtension = true))
     }
 
-    override fun getDirPath(): String {
-        return "src/test/testData/lexer/schema"
-    }
-
     fun testSchemaKeyword() {
-        doTest("schema")
+        doFileTest("lexer/schema/keyword.von")
     }
 
     fun testSchemaBlock() {
-        doTest("schema game_db { }")
+        doFileTest("lexer/schema/block.von")
     }
 
     fun testSchemaWithDialect() {
-        doTest("schema game_db { dialect: \"postgresql\" }")
+        doFileTest("lexer/schema/dialect.von")
     }
 
     fun testEnumDefinition() {
-        doTest("enums ItemRarity { Common = 0 }")
+        doFileTest("lexer/schema/enum.von")
     }
 
     fun testModelDefinition() {
-        doTest("model Player { id: uuid }")
+        doFileTest("lexer/schema/model.von")
     }
 
     fun testMessageDefinition() {
-        doTest("message GetPlayerRequest { id: uuid }")
+        doFileTest("lexer/schema/message.von")
     }
 
     fun testServiceDefinition() {
-        doTest("service PlayerService { get_player() -> Player }")
+        doFileTest("lexer/schema/service.von")
     }
 
     fun testNamespaceDeclaration() {
-        doTest("namespace game_backend;")
+        doFileTest("lexer/schema/namespace.von")
     }
 
     fun testFieldWithDefault() {
-        doTest("level: i32 = 1;")
+        doFileTest("lexer/schema/fieldDefault.von")
     }
 
     fun testOptionalField() {
-        doTest("email: string?;")
+        doFileTest("lexer/schema/optionalField.von")
     }
 
     fun testReferenceField() {
-        doTest("inventory: [&PlayerInventory];")
+        doFileTest("lexer/schema/referenceField.von")
     }
 }

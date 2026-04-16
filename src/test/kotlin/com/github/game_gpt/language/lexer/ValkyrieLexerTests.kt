@@ -2,55 +2,50 @@ package com.github.game_gpt.language.lexer
 
 import com.github.game_gpt.ide.config.ValkyrieLanguageConfig
 import com.intellij.lexer.Lexer
-import com.intellij.testFramework.LexerTestCase
 
-class ValkyrieLexerTests : LexerTestCase() {
+class ValkyrieLexerTests : GnosticLexerTest() {
 
     override fun createLexer(): Lexer {
         return ValkyrieLexer(ValkyrieLanguageConfig())
     }
 
-    override fun getDirPath(): String {
-        return "src/test/testData/lexer/script"
-    }
-
     fun testKeywords() {
-        doTest("class fn let if else loop while return true false null trait enum")
+        doFileTest("lexer/script/keywords.von")
     }
 
     fun testStringLiteral() {
-        doTest("\"hello\"")
+        doFileTest("lexer/script/string.von")
     }
 
     fun testNumberLiteral() {
-        doTest("123 3.14")
+        doFileTest("lexer/script/number.von")
     }
 
     fun testIdentifier() {
-        doTest("Player")
+        doFileTest("lexer/script/identifier.von")
     }
 
     fun testOperators() {
-        doTest("+ - * / % = ==")
+        doFileTest("lexer/script/operators.von")
     }
 
     fun testArrow() {
-        doTest("-> =>")
+        doFileTest("lexer/script/arrow.von")
     }
 
     fun testDoubleColon() {
-        doTest("::")
+        doFileTest("lexer/script/doubleColon.von")
     }
 
     fun testParentheses() {
-        doTest("() {} []")
+        doFileTest("lexer/script/parentheses.von")
     }
 
     fun testPunctuation() {
-        doTest("; , . :")
+        doFileTest("lexer/script/punctuation.von")
     }
 
     fun testComment() {
-        doTest("# comment")
+        doFileTest("lexer/script/comment.von")
     }
 }
