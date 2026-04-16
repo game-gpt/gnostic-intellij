@@ -22,43 +22,42 @@ class VonLexerTests : GnosticLexerTest() {
         return VonLexer()
     }
 
-    override val dirPath: String = "src/test/testData"
+    override val dirPath: String = "src/test/testData/lexer/von"
 
     fun testComment() {
-        doFileTest("lexer/von/comment.von")
-        doTest("# comment")
+        doFileTest()
     }
 
     fun testStringLiteral() {
-        doTest("\"hello von!\"")
+        doFileTest()
     }
 
     fun testNumberLiteral() {
-        doTest("123 3.14")
+        doFileTest()
     }
 
     fun testIdentifier() {
-        doTest("Player")
+        doFileTest()
     }
 
     fun testKeywords() {
-        doTest("true false null")
+        doFileTest()
     }
 
     fun testBraces() {
-        doTest("[] {}")
+        doFileTest()
     }
 
     fun testColonAndComma() {
-        doTest(":,")
+        doFileTest()
     }
 
     fun testKeywordsAsKeys() {
-        doTest("{true: true, false: false, null: null}")
+        doFileTest()
     }
 
     fun testMixedObject() {
-        doTest("{name: \"test\", count: 42, active: true}")
+        doFileTest()
     }
 }
 
@@ -67,26 +66,42 @@ class VonLexerTests : GnosticLexerTest() {
 abstract class GnosticLexerTest : UsefulTestCase() {
     protected val testDataDir: String
         get() {
-            return "src/test/testData"
+            return dirPath + "/" + getTestName(true) + expectedFileExtension
         }
 
     protected val expectedFileExtension: String
         get() = ".txt"
 
+    protected var refreshExpected: Boolean = false
+
     protected abstract fun createLexer(): Lexer
 
     protected fun doFileTest(path: String, lexer: Lexer = createLexer()) {
-        val source = FileUtil.loadFile(File("$testDataDir/$path"))
-        val expected = FileUtil.loadFile(File("$testDataDir/$path$expectedFileExtension"))
-        doTest(source, expected, lexer)
-    }
-    protected fun doTest(source: String, expected: String, lexer: Lexer = createLexer()) {
+        val sourceFile = File(getPathToTestDataFile(""))
+        val source = FileUtil.loadFile(File(sourceFile.parent, sourceFile.nameWithoutExtension))
+        val expectedFile = File(getPathToTestDataFile(expectedFileExtension))
         val result = printTokens(lexer, source, 0)
-        assertSameLines(expected, result)
+        if (refreshExpected || !expectedFile.exists()) {
+            FileUtil.writeToFile(expectedFile, result)
+        }
+        assertSameLinesWithFile(expectedFile, result)
+    }
+
+    protected fun doTest(source: String, lexer: Lexer = createLexer()) {
+        val expectedFile = File(getPathToTestDataFile(expectedFileExtension))
+        val result = printTokens(lexer, source, 0)
+        if (refreshExpected || !expectedFile.exists()) {
+            FileUtil.writeToFile(expectedFile, result)
+        }
+        assertSameLinesWithFile(expectedFile, result)
     }
 
     protected fun printTokens(lexer: Lexer, text: CharSequence, start: Int): String {
         return GnosticLexerTest.Companion.printTokens(text, start, lexer)
+    }
+
+    protected fun getPathToTestDataFile(extension: String): String {
+        return dirPath + "/" + getTestName(true) + extension
     }
 
 
