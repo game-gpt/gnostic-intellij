@@ -9,10 +9,8 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import com.intellij.testFramework.UsefulTestCase
-import com.intellij.testFramework.fixtures.IdeaTestExecutionPolicy
 import junit.framework.TestCase
 import java.io.File
-import java.io.IOException
 import java.util.*
 import java.util.stream.Collectors
 
@@ -23,6 +21,9 @@ class VonLexerTests : GnosticLexerTest() {
     }
 
     override val dirPath: String = "src/test/testData/lexer/von"
+
+    override val sourceFileExtension: String
+        get() = ".von"
 
     fun testComment() {
         doFileTest()
@@ -64,36 +65,28 @@ class VonLexerTests : GnosticLexerTest() {
 
 
 abstract class GnosticLexerTest : UsefulTestCase() {
-    protected val testDataDir: String
-        get() {
-            return dirPath + "/" + getTestName(true) + expectedFileExtension
-        }
-
     protected val expectedFileExtension: String
         get() = ".txt"
 
+    protected open val sourceFileExtension: String
+        get() = ""
+
     protected var refreshExpected: Boolean = false
+
+    protected abstract val dirPath: String
 
     protected abstract fun createLexer(): Lexer
 
-    protected fun doFileTest(path: String, lexer: Lexer = createLexer()) {
-        val sourceFile = File(getPathToTestDataFile(""))
-        val source = FileUtil.loadFile(File(sourceFile.parent, sourceFile.nameWithoutExtension))
-        val expectedFile = File(getPathToTestDataFile(expectedFileExtension))
+    protected fun doFileTest(lexer: Lexer = createLexer()) {
+        val sourceFile = File(getPathToTestDataFile(sourceFileExtension))
+        val source = FileUtil.loadFile(sourceFile)
+        val expectedFilePath = getPathToTestDataFile(expectedFileExtension)
+        val expectedFile = File(expectedFilePath)
         val result = printTokens(lexer, source, 0)
         if (refreshExpected || !expectedFile.exists()) {
             FileUtil.writeToFile(expectedFile, result)
         }
-        assertSameLinesWithFile(expectedFile, result)
-    }
-
-    protected fun doTest(source: String, lexer: Lexer = createLexer()) {
-        val expectedFile = File(getPathToTestDataFile(expectedFileExtension))
-        val result = printTokens(lexer, source, 0)
-        if (refreshExpected || !expectedFile.exists()) {
-            FileUtil.writeToFile(expectedFile, result)
-        }
-        assertSameLinesWithFile(expectedFile, result)
+        assertSameLinesWithFile(expectedFilePath, result)
     }
 
     protected fun printTokens(lexer: Lexer, text: CharSequence, start: Int): String {
