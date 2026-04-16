@@ -185,9 +185,9 @@ abstract class GnosticLexerTest : UsefulTestCase() {
             lexer.start(text, start, text.length)
             val result = StringBuilder()
             var tokenType: IElementType?
-            while ((lexer.getTokenType().also { tokenType = it }) != null) {
+            while ((lexer.tokenType.also { tokenType = it }) != null) {
                 result.append(
-                    Companion.printSingleToken(
+                    printSingleToken(
                         text,
                         tokenType!!,
                         lexer.tokenStart,
@@ -206,7 +206,7 @@ abstract class GnosticLexerTest : UsefulTestCase() {
             while (!iterator.atEnd()) {
                 tokenType = iterator.tokenType
                 result.append(
-                    Companion.printSingleToken(
+                    printSingleToken(
                         text,
                         tokenType,
                         iterator.start,
