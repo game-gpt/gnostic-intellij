@@ -228,10 +228,11 @@ abstract class GnosticLexerTest : UsefulTestCase() {
         }
 
         private fun getTokenText(tokenType: IElementType, sequence: CharSequence, start: Int, end: Int): String {
-            return if (tokenType is TokenWrapper)
+            return if (tokenType is TokenWrapper) {
                 tokenType.text
-            else
+            } else {
                 StringUtil.replace(sequence.subSequence(start, end).toString(), "\n", "\\n")
+            }
         }
     }
 }
