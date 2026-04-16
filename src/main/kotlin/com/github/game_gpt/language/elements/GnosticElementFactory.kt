@@ -4,6 +4,7 @@ import com.github.game_gpt.language.GnosticScriptLanguage
 import com.github.game_gpt.language.types.NoteTypes
 import com.github.game_gpt.language.types.ValkyrieTypes
 import com.github.game_gpt.language.types.VocTypes
+import com.github.game_gpt.language.types.VonTypes
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -22,6 +23,7 @@ object GnosticElementFactory {
         val elementType = node.elementType
 
         return when (elementType) {
+            // ==================== Valkyrie 语言 ====================
             ValkyrieTypes.CLASS_DECLARATION -> ValkyrieClassElement(node)
             ValkyrieTypes.NAMESPACE_DECLARATION -> ValkyrieNamespaceElement(node)
             ValkyrieTypes.FUNCTION_DECLARATION -> ValkyrieMicroElement(node)
@@ -57,62 +59,77 @@ object GnosticElementFactory {
             ValkyrieTypes.CONST_DECLARATION -> GnosticElement(node)
             ValkyrieTypes.USING_DECLARATION -> ValkyrieUsingElement(node)
 
-            VocTypes.TEMPLATE_SECTION,
-            VocTypes.SCRIPT_SECTION,
-            VocTypes.STYLE_SECTION,
-            VocTypes.WIDGET_ELEMENT,
-            VocTypes.WIDGET_TAG_NAME,
-            VocTypes.WIDGET_ATTRIBUTE,
-            VocTypes.WIDGET_ATTRIBUTE_NAME,
-            VocTypes.WIDGET_ATTRIBUTE_VALUE,
-            VocTypes.BRACE_EXPRESSION,
-            VocTypes.USING_DECLARATION,
-            VocTypes.LET_DECLARATION,
-            VocTypes.CONST_DECLARATION,
-            VocTypes.MICRO_DECLARATION,
-            VocTypes.MEZZO_DECLARATION,
-            VocTypes.MACRO_DECLARATION,
-            VocTypes.FUNCTION_DECLARATION,
-            VocTypes.BLOCK,
-            VocTypes.PARAMETER_LIST,
-            VocTypes.EXPRESSION,
-            VocTypes.EXPRESSION_STATEMENT,
-            VocTypes.IDENTIFIER_REFERENCE,
-            VocTypes.STYLE_RULE,
-            VocTypes.STYLE_BLOCK,
-            VocTypes.STYLE_SELECTOR,
-            VocTypes.STYLE_BODY,
-            VocTypes.STYLE_PROPERTY,
-            VocTypes.STYLE_PROPERTY_NAME,
+            // ==================== VON 语言 ====================
+            VonTypes.VON_DICT -> VonDictElement(node)
+            VonTypes.VON_LIST -> VonListElement(node)
+            VonTypes.VON_PAIR -> VonPairElement(node)
+
+            // ==================== Notedown 语言 ====================
+            NoteTypes.STORY_FILE -> NoteStoryElement(node)
+            NoteTypes.VARIABLE_DEFINITION -> NoteVariableElement(node)
+            NoteTypes.INCLUDE_STATEMENT -> NoteIncludeElement(node)
+            NoteTypes.SCENE_DEFINITION -> NoteSceneElement(node)
+            NoteTypes.SCENE_HEADER -> GnosticElement(node)
+            NoteTypes.SCENE_BODY -> NoteSceneBodyElement(node)
+            NoteTypes.TEXT_LINE -> NoteTextLineElement(node)
+            NoteTypes.DIALOGUE_LINE -> NoteDialogueElement(node)
+            NoteTypes.SPEAKER_NAME -> GnosticElement(node)
+            NoteTypes.DIALOGUE_TEXT -> GnosticElement(node)
+            NoteTypes.CHOICE_BLOCK -> NoteChoiceBlockElement(node)
+            NoteTypes.CHOICE_ITEM -> NoteChoiceItemElement(node)
+            NoteTypes.CHOICE_TEXT -> GnosticElement(node)
+            NoteTypes.CHOICE_BODY -> NoteChoiceBodyElement(node)
+            NoteTypes.CONDITION_EXPRESSION -> GnosticElement(node)
+            NoteTypes.COMMAND_CALL -> NoteCommandElement(node)
+            NoteTypes.MODULE_NAME -> GnosticElement(node)
+            NoteTypes.FUNCTION_NAME -> GnosticElement(node)
+            NoteTypes.ARGUMENT_LIST -> GnosticElement(node)
+            NoteTypes.VARIABLE_OPERATION -> NoteVariableOpElement(node)
+            NoteTypes.JUMP_STATEMENT -> NoteJumpElement(node)
+            NoteTypes.JUMP_TARGET -> GnosticElement(node)
+            NoteTypes.CONDITIONAL_BLOCK -> NoteConditionalElement(node)
+            NoteTypes.CONDITION_BRANCH -> NoteConditionBranchElement(node)
+            NoteTypes.SEPARATOR -> GnosticElement(node)
+            NoteTypes.EXPRESSION -> NoteExpressionElement(node)
+
+            // ==================== VOC 语言 ====================
+            // 区块
+            VocTypes.TEMPLATE_SECTION -> VocTemplateSectionElement(node)
+            VocTypes.SCRIPT_SECTION -> VocScriptSectionElement(node)
+            VocTypes.STYLE_SECTION -> VocStyleSectionElement(node)
+
+            // 模板元素
+            VocTypes.WIDGET_ELEMENT -> VocWidgetElement(node)
+            VocTypes.WIDGET_TAG_NAME -> GnosticElement(node)
+            VocTypes.WIDGET_ATTRIBUTE -> VocWidgetAttributeElement(node)
+            VocTypes.WIDGET_ATTRIBUTE_NAME -> GnosticElement(node)
+            VocTypes.WIDGET_ATTRIBUTE_VALUE -> GnosticElement(node)
+            VocTypes.BRACE_EXPRESSION -> VocBraceExpressionElement(node)
+
+            // 脚本元素
+            VocTypes.USING_DECLARATION -> VocUsingElement(node)
+            VocTypes.LET_DECLARATION -> VocVariableElement(node)
+            VocTypes.CONST_DECLARATION -> VocVariableElement(node)
+            VocTypes.MICRO_DECLARATION -> VocFunctionElement(node)
+            VocTypes.MEZZO_DECLARATION -> VocFunctionElement(node)
+            VocTypes.MACRO_DECLARATION -> VocFunctionElement(node)
+            VocTypes.FUNCTION_DECLARATION -> VocFunctionElement(node)
+            VocTypes.BLOCK -> VocBlockElement(node)
+            VocTypes.PARAMETER_LIST -> VocParameterListElement(node)
+            VocTypes.EXPRESSION -> VocExpressionElement(node)
+            VocTypes.EXPRESSION_STATEMENT -> GnosticElement(node)
+            VocTypes.IDENTIFIER_REFERENCE -> VocIdentifierRefElement(node)
+
+            // 样式元素
+            VocTypes.STYLE_RULE -> VocStyleRuleElement(node)
+            VocTypes.STYLE_BLOCK -> GnosticElement(node)
+            VocTypes.STYLE_SELECTOR -> GnosticElement(node)
+            VocTypes.STYLE_BODY -> GnosticElement(node)
+            VocTypes.STYLE_PROPERTY -> VocStylePropertyElement(node)
+            VocTypes.STYLE_PROPERTY_NAME -> GnosticElement(node)
             VocTypes.STYLE_PROPERTY_VALUE -> GnosticElement(node)
 
-            NoteTypes.STORY_FILE,
-            NoteTypes.VARIABLE_DEFINITION,
-            NoteTypes.INCLUDE_STATEMENT,
-            NoteTypes.SCENE_DEFINITION,
-            NoteTypes.SCENE_HEADER,
-            NoteTypes.SCENE_BODY,
-            NoteTypes.TEXT_LINE,
-            NoteTypes.DIALOGUE_LINE,
-            NoteTypes.SPEAKER_NAME,
-            NoteTypes.DIALOGUE_TEXT,
-            NoteTypes.CHOICE_BLOCK,
-            NoteTypes.CHOICE_ITEM,
-            NoteTypes.CHOICE_TEXT,
-            NoteTypes.CHOICE_BODY,
-            NoteTypes.CONDITION_EXPRESSION,
-            NoteTypes.COMMAND_CALL,
-            NoteTypes.MODULE_NAME,
-            NoteTypes.FUNCTION_NAME,
-            NoteTypes.ARGUMENT_LIST,
-            NoteTypes.VARIABLE_OPERATION,
-            NoteTypes.JUMP_STATEMENT,
-            NoteTypes.JUMP_TARGET,
-            NoteTypes.CONDITIONAL_BLOCK,
-            NoteTypes.CONDITION_BRANCH,
-            NoteTypes.SEPARATOR,
-            NoteTypes.EXPRESSION -> GnosticElement(node)
-
+            // ==================== 默认 ====================
             else -> GnosticElement(node)
         }
     }

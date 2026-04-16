@@ -48,8 +48,7 @@ class DebugParserTest : LightJavaCodeInsightFixtureTestCase() {
     }
 
     private fun debugParse(fileName: String, content: String) {
-        val config = NotedownLanguageConfig(supportXmlExtension = true)
-        val parserDefinition = StoryParserDefinition(config)
+        val parserDefinition = StoryParserDefinition()
         
         myFixture.configureByText(fileName, content)
         val file = myFixture.file

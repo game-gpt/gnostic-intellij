@@ -12,7 +12,7 @@ class GnosticFormattingTest : BasePlatformTestCase() {
         val input = "{name: \"test\", count: 42}"
         myFixture.configureByText("test.von", input)
         com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction(project) {
-            com.intellij.codeInsight.actions.ReformatCodeProcessor(project, myFixture.file, null, false).run()
+            com.intellij.codeInsight.actions.ReformatCodeProcessor(myFixture.file, false).run()
         }
         val result = myFixture.editor.document.text
         Assert.assertNotNull("Formatting should produce non-null result", result)

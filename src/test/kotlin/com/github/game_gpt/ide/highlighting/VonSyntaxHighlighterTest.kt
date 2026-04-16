@@ -102,7 +102,7 @@ class VonSyntaxHighlighterTest : LightPlatformTestCase() {
     }
 
     fun testUnknownTokenReturnsEmpty() {
-        val unknownToken = com.intellij.psi.TokenType.BAD_TOKEN
+        val unknownToken = com.intellij.psi.TokenType.BAD_CHARACTER
         val highlights = highlighter.getTokenHighlights(unknownToken)
         Assert.assertArrayEquals(
             "Unknown token should return empty array",
