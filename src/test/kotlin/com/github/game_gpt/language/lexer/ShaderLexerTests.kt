@@ -11,7 +11,7 @@ class ShaderLexerTests : LexerTestCase() {
     }
 
     override fun getDirPath(): String {
-        return "lexer/shader"
+        return "src/test/testData/lexer/shader"
     }
 
     fun testShaderKeyword() {

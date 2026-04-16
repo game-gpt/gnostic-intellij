@@ -10,7 +10,7 @@ class VonLexerTests : LexerTestCase() {
     }
 
     override fun getDirPath(): String {
-        return "lexer/von"
+        return "src/test/testData/lexer/von"
     }
 
     fun testComment() {

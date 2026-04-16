@@ -94,7 +94,7 @@ class VocSyntaxHighlighterTest : LightPlatformTestCase() {
     }
 
     fun testUnknownTokenReturnsEmpty() {
-        val unknownToken = com.intellij.psi.TokenType.ERROR_ELEMENT
+        val unknownToken = com.intellij.psi.TokenType.BAD_TOKEN
         val highlights = highlighter.getTokenHighlights(unknownToken)
         Assert.assertArrayEquals(
             "Unknown token should return empty array",

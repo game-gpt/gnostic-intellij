@@ -10,7 +10,7 @@ class VocLexerTests : LexerTestCase() {
     }
 
     override fun getDirPath(): String {
-        return "lexer/widget"
+        return "src/test/testData/lexer/widget"
     }
 
     fun testTemplateTag() {

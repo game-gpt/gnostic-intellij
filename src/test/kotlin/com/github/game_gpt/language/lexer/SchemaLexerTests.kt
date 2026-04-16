@@ -11,7 +11,7 @@ class SchemaLexerTests : LexerTestCase() {
     }
 
     override fun getDirPath(): String {
-        return "lexer/schema"
+        return "src/test/testData/lexer/schema"
     }
 
     fun testSchemaKeyword() {

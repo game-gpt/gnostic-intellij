@@ -11,7 +11,7 @@ class ValkyrieLexerTests : LexerTestCase() {
     }
 
     override fun getDirPath(): String {
-        return "lexer/script"
+        return "src/test/testData/lexer/script"
     }
 
     fun testKeywords() {
